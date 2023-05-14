@@ -1,7 +1,13 @@
 :root {
     --fondo-gris-oscuro: #eeeeeeeb;
     --fondo-gris-claro: #f6f2f23d;
-    --shadow: 4px 1px 4px 2px rgba(172,172,172,0.29)
+    --shadow: 4px 1px 4px 2px rgba(172,172,172,0.29);
+    --color1:  #120912;
+    --color2:  #122a3e;
+    --color3:  #125a71;
+    --color4:  #1a8bb0;
+    --color5:  #20c6d8;
+
   }
 
 *{
@@ -16,13 +22,30 @@ html{
 }
 header{
     display: flex;
-    align-items: flex-end;
     justify-content: space-between;
     padding: 0 25px 25px;
     background-color: var(--fondo-gris-oscuro);
-
+    flex-direction: column;
+}
+header nav{
+    display: flex;
+    justify-content: space-around;
+}
+.logo-search-login{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
+.ul-categoria {
+    display: none;
+}
+.nav-categorias:hover ~ .ul-categoria {
+    
+    display: block;
+    position: fixed;
+    background: var(--fondo-gris-oscuro);
+}
 
 .logo-container{
     width: 14%;

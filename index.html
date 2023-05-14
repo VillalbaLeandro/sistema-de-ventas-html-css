@@ -11,21 +11,40 @@
 
 <body>
     <header>
-        <div class="logo-container">
-            <img src="./public/img/logo.jpg" alt="company-name-logo.jpg">
-        </div>
-        <div class="search-container">
-            <label for="search">Buscar 🔎</label>
-            <input type="search" name="search" id="" placeholder="Inicie una Busqueda...">
-        </div>
-        <div class="login-section">
-            <div>
-                <a href="/#">Registrate</a>
+        <div class="logo-search-login">
+            <div class="logo-container">
+                <img src="./public/img/logo.jpg" alt="company-name-logo.jpg">
             </div>
-            <div>
-                <a href="/#">Incia sesion</a>
+            <div class="search-container">
+                <label for="search">Buscar 🔎</label>
+                <input type="search" name="search" id="" placeholder="Inicie una Busqueda...">
+            </div>
+            <div class="login-section">
+                <div>
+                    <a href="/#">Registrate</a>
+                </div>
+                <div>
+                    <a href="/#">Incia sesion</a>
+                </div>
             </div>
         </div>
+        <nav>
+			
+				<p><a href="#">Inicio</a></p>
+				<li><a href="#" class="nav-categorias">Categorias</a>
+					<ul class="ul-categoria">
+						<li class="li-categoria"><a href="#">Item #1</a></li>
+						<li class="li-categoria"><a href="#">Item #2</a></li>
+						<li class="li-categoria"><a href="#">Item #3</a></li>
+						<li class="li-categoria"><a href="#">Item #4</a></li>
+						<li class="li-categoria"><a href="#">Item #5</a></li>
+					</ul>
+				</li>
+				<p><a href="#"><span class="tercero"><i class="icon icon-suitcase"></i></span>Servicios</a></p>
+				<p><a href="#"><span class="cuarto"><i class="icon icon-text"></i></span>Acerca de</a></p>
+				<p><a href="#"><span class="quinto"><i class="icon icon-mail"></i></span>Contacto</a></p>
+			
+		</nav>
     </header>
     <main>
         <div class="interfaz-container">
@@ -121,22 +140,22 @@
                 </div>
 
 
-              <div class="nombrecliente-cel-direccion">
-                <div class="nombre-container">
-                    <label for="clienteName">Nombre cliente: </label><br>
-                    <input type="text" name="clienteName">
-                </div>
-                
-                <div class="cel-container">
-                    <label for="cel">Celular:  </label><br>
-                    <input type="number" name="cel">
-                </div>
+                <div class="nombrecliente-cel-direccion">
+                    <div class="nombre-container">
+                        <label for="clienteName">Nombre cliente: </label><br>
+                        <input type="text" name="clienteName">
+                    </div>
 
-                <div class="direccion-container">
-                    <label for="direccion">Direccion:  </label><br>
-                    <input type="number" name="direccion">
+                    <div class="cel-container">
+                        <label for="cel">Celular: </label><br>
+                        <input type="number" name="cel">
+                    </div>
+
+                    <div class="direccion-container">
+                        <label for="direccion">Direccion: </label><br>
+                        <input type="number" name="direccion">
+                    </div>
                 </div>
-              </div>
             </div>
         </section>
         <section class="comprobante recuadro-gris">
@@ -149,7 +168,7 @@
                     <option value="remito">Remito</option>
                     <option value="otros">Otros</option>
                 </select>
-                
+
             </div>
             <div class="finalizar">
                 <button>FINALIZAR VENTA</button>
