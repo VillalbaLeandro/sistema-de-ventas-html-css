@@ -1,0 +1,101 @@
+:root {
+    --fondo-gris-oscuro: #eeeeeeeb;
+    --fondo-gris-claro: #f6f2f23d;
+    --shadow: 4px 1px 4px 2px rgba(172,172,172,0.29)
+  }
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* INICIO HEADER -------------------------- */
+html{
+    background-color: var(--fondo-gris-claro);
+}
+header{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 25px 25px;
+    background-color: var(--fondo-gris-oscuro);
+
+}
+
+
+.logo-container{
+    width: 14%;
+}
+.logo-container img{
+    width: 100%;
+}
+
+.login-section{
+    display: flex;
+    
+}
+.login-section div{
+    margin: 4px;    
+}
+
+
+/* -----------------------------FIN HEADER -------------------------- */
+
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* INICIIO MAIN --------------------------------- */
+
+
+.interfaz-container{
+    display:flex;
+}
+
+.datos-cabecera{
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 10px;
+    flex-direction: column;
+    
+}
+
+.recuadro-gris{
+    border: 1px solid #ebebebeb;
+    padding: 6px;
+}
+
+.datos-cabecera div{
+    margin: 2px;
+}
+
+/* -----Seccion detalles del producto */
+.name-codigo-stock, .descripcion-categoria, .precios-container{
+    display: flex;
+}
+.precios-container{
+    margin: 10px;
+}
+.precios-container div{
+    margin: 2px;
+}
+
+.img-product div{
+    border: red 2px solid;
+}
+
+
+/* Secccion detalles del cliente  */
+
+
+.cliente-container div{
+ display: flex;
+ flex-wrap: wrap;
+}
+
+.nombrecliente-cel-direccion div{
+    margin: 6px 4px;
+}
