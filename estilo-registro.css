@@ -44,10 +44,11 @@ body {
     width: 100%;
     border: 1px solid#017bab;
     margin-bottom: 15px;
-    padding: 11px 0px;
+    padding: 10px;
     background: #252323;
     font-size: 14px;
     font-weight: bold;
+    color: white;
 
 }
 
