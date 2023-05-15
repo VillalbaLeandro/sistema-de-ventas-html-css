@@ -1,61 +1,63 @@
-{
-margin:0;
-padding:0;
-box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family:Arial ;
-    background: linear-gradient(-45deg, 
-    #0d1c33, #142c4e, #1c3d68, #264e83, #305f9d, #3a70b8, #4461d2);
+  font-family: Arial;
+  background: linear-gradient(-45deg,
+      #0d1c33, #142c4e, #1c3d68, #264e83, #305f9d, #3a70b8, #4461d2);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
- 
-
-}
-
-.form-login{
-
-width: 400px;
-height: 340px;
-background: #494646;
-margin:auto;
-margin-top: 180px;
-box-shadow: 7px 13px 37px #000;
-padding: 20px 30px;
-border-top: 4px solid#017bab;
-color: white;
-
-}
-.form-login h5{
-margin: 0;
-text-align: center;
-height: 40px;
-margin-bottom: 30px;
-border-bottom: 1px solid;
-font-size: 20px;
-
 
 
 }
 
-.controls{
-width: 100%;
-border: 1px solid#017bab;
-margin-bottom: 15px;
-padding: 11px 0px;
-background: #252323;
-font-size: 14px;
-font-weight: bold;
+.form-login {
+  border-radius: 4px;
+  width: 400px;
+  height: 340px;
+  background: #494646;
+  margin: auto;
+  margin-top: 180px;
+  box-shadow: 7px 13px 37px #000;
+  padding: 20px 30px;
+  border-top: 4px solid#017bab;
+  color: white;
 
 }
-.boton{
-width: 100%;
-height: 40px;
-background:#017bab ;
-border: none;
-color: white;
-margin-bottom: 16px;
+
+.form-login h5 {
+  margin: 0;
+  text-align: center;
+  height: 40px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid;
+  font-size: 20px;
+
+
+
+}
+
+.controls {
+  width: 100%;
+  border: 1px solid#017bab;
+  margin-bottom: 15px;
+  padding: 11px 0px;
+  background: #252323;
+  font-size: 14px;
+  font-weight: bold;
+
+}
+
+.boton {
+  width: 100%;
+  height: 40px;
+  background: #017bab;
+  border: none;
+  color: white;
+  margin-bottom: 16px;
 
 }
 
@@ -63,31 +65,37 @@ margin-bottom: 16px;
   background-color: #015a79;
   cursor: pointer;
 }
+
 .form-login p {
 
-height: 40px;
-text-align: center;
-border-bottom: 1px solid;
+  height: 40px;
+  text-align: center;
+  border-bottom: 1px solid;
 
 }
-.form-login a{
-color: white;
-text-decoration: none;
-font-size: 14px;
+
+.form-login a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
 
 }
+
 .form-login a:hover {
-    text-decoration:underline ;
-    }
+  text-decoration: underline;
+}
 
 
-    @keyframes gradient {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
