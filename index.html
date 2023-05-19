@@ -5,182 +5,144 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/fc1047b7d0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/style.css">
+    <link rel="stylesheet" href="./public/css/products.css">
     <title>Document</title>
 </head>
 
 <body>
     <header>
-        <div class="logo-search-login">
-            <div class="logo-container">
-                <img src="./public/img/logo.jpg" alt="company-name-logo.jpg">
-            </div>
-            <div class="search-container">
-                <label for="search">Buscar 🔎</label>
-                <input type="search" name="search" id="" placeholder="Inicie una Busqueda...">
-            </div>
-            <div class="login-section">
-                <div>
-                    <a href="/registro.html">Registrate</a>
+        <div class="logo-container">
+            <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore">
+        </div>
+        <div class="burguer-navbar-container">
+            <div class="menu-container">
+                <div class="menu-hamburguesa-container">
+                    <i class="fa-solid fa-bars"></i>
                 </div>
-                <div>
-                    <a href="/login.html">Incia sesion</a>
+                <div class="menu-navbar">
+                    <ul>
+                        <li>
+                            <p>
+                                Inicio
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Sobre Mi
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Preguntas Frecuentes
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Productos
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Contacto
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="cart-login-container">
+                <div class="icon-cart-container">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <div class="icon-logout-container">
+                    <i class="fa-solid fa-right-from-bracket logout-icon"></i>
+                </div>
+                <div class="login-register">
+                    <div class="login-cont">
+                        <p class="login">
+                           <a href="./login.html">Login</a> 
+                        </p>
+                    </div>
+                    <div class="register">
+                        <p>
+                            <a href="./registro.html">Registro</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-        <nav>
-			
-				<p><a href="#">Inicio</a></p>
-				<li><a href="#" class="nav-categorias">Categorias</a>
-					<ul class="ul-categoria">
-						<li class="li-categoria"><a href="#">Item #1</a></li>
-						<li class="li-categoria"><a href="#">Item #2</a></li>
-						<li class="li-categoria"><a href="#">Item #3</a></li>
-						<li class="li-categoria"><a href="#">Item #4</a></li>
-						<li class="li-categoria"><a href="#">Item #5</a></li>
-					</ul>
-				</li>
-				<p><a href="#"><span class="tercero"><i class="icon icon-suitcase"></i></span>Servicios</a></p>
-				<p><a href="#"><span class="cuarto"><i class="icon icon-text"></i></span>Acerca de</a></p>
-				<p><a href="#"><span class="quinto"><i class="icon icon-mail"></i></span>Contacto</a></p>
-			
-		</nav>
     </header>
     <main>
-        <div class="interfaz-container">
-            <div class="data-container">
+        <section id="bienvenida" class="seccion-bienvenida">
 
-                <section class="datos-cabecera">
-                    <div class="name-codigo-stock shadow recuadro-gris">
-                        <div class="name-product-container">
-                            <label for="name">Nombre Producto:</label><br>
-                            <input type="text" name="name">
-                        </div>
-                        <div class="codigo-container">
-                            <label for="codigo">Codigo:</label><br>
-                            <input type="text" name="codigo">
-                        </div>
-                        <div class="stock-container">
-                            <label for="stock">Stock:</label><br>
-                            <input type="number" name="stock">
-
-                        </div>
-                    </div>
-                    <div class="descripcion-categoria shadow recuadro-gris">
-                        <div class="descripcion">
-                            <label for="descripcion">Descripcion:</label><br>
-                            <input type="text" name="descripcion">
-                        </div>
-                        <div class="categoria-container">
-                            <label for="categoria">Categoria: </label> <br>
-                            <select name="categoria" id="">
-                                <option value="bebidas">Bebidass</option>
-                                <option value="hielos">Hielos</option>
-                                <option value="snaks">Snaks</option>
-                                <option value="cigarrillo">Cigarrillo</option>
-                                <option value="otros">Otros</option>
-                            </select>
-
-                        </div>
-                        <div class="proveedor">
-                            <label for="proveedor">Proveedor: </label><br>
-                            <input type="text" name="proveedor">
-                        </div>
-                    </div>
-                </section>
-                <section class="precios-container shadow recuadro-gris">
-                    <div class="precio-publico">
-                        <label for="precioPublico">Precio Publico:</label> <br>
-                        <input type="number" name="precioPublico">
-                    </div>
-
-                    <p class="signo-operacion suma">+</p>
-                    <div class="iva-container">
-                        <label for="iva">IVA: </label> <br>
-                        <select name="iva" id="">
-                            <option value="conIva">con IVA</option>
-                            <option value="sinIva">sin IVA</option>
-                        </select>
-                    </div>
-
-                    <p class="signo-operacion igual">=</p>
-                    <div class="precio-neto-container">
-                        <label for="precioNeto">Precio Neto: </label> <br>
-                        <input type="number" name="precioNeto"><br>
-                    </div>
-                    <div class="moneda-container">
-                        <label for="moneda">Tipo Moneda: </label> <br>
-                        <select name="moneda" id="">
-                            <option value="pesos">Pesos</option>
-                            <option value="dolares">Dolares</option>
-                            <option value="guaranies">Guaranies</option>
-                            <option value="eruos">Eruos</option>
-                        </select>
-                    </div>
-                </section>
+            <div class="bienvenidos">
+                <h2 class="bienvenidos-title">BIENVENIDOS A </h2>
+                <div class="logo-container-bienvenida">
+                    <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore">
+                </div>
+                <h2 class="bienvenidos-subtitle">Tenemos una amplia variedad de productosE</h2>
+                <h2 class="bienvenidos-horario">Atencion las 24hs. 7 dias a la semana</h2>
             </div>
-            <div class="product-img-container">
-                <section class="img-product">
-                    <div>
-                        <img width="180px" src="./public/img/products/585e5e47cb11b227491c33ee.png" alt="">
-                    </div>
-                </section>
-
+            <div class="slider">
+                <img src="./public/images/drink1.jpg" alt="">
             </div>
+
+        </section>
+        <div class="sobre-nosotros">
+            <section id="sobre-nosotros"">
+                 <h3> SOBRE NOSOTROS </h3>
+                 <div class=" sobre-nosotros-p">
+
+                <p>
+                    Fundamos drinkstore en el año 2000, con una misión: ser un(a) Tienda de bebidas alcohólicas de alta
+                    calidad en Posadas.
+                    Nuestra pasión por la excelencia nos condujo a materializar esta misión,
+                    siendo ésta la parte fundamental que nos ha impulsado a seguir adelante.
+                    Nos enorgullecemos de ofrecer una experiencia de compra superior y
+                    de las relaciones a largo plazo que hemos construido con nuestros clientes.
+                    Visítanos hoy mismo.
+                </p>
         </div>
-        <br>
-        <hr>
-        <section class="cliente-container recuadro-gris">
-            <h3>Datos del Cliente: </h3>
-            <div class="datos-container">
-                <div class="dni-container">
-                    <label for="dni">DNI Nº: </label><br>
-                    <input type="number" name="dni">
-                    <button>Buscar🔎</button>
-                </div>
+        </section>
+        <h3> NUESTROS PRODUCTOS </h3>
+        <section class="products-section">
+            <div class="cervezas">
+                <article class="main">
+                    <div class="card" id="c1"></div>
+                    <div class="card" id="c2"></div>
+                    <div class="card" id="c3"></div>
+                    <div class="card" id="c4"></div>
+                </article>
 
+            </div>
+            <div class="vinos">
+                <article class="main">
+                    <div class="card" id="c5"></div>
+                    <div class="card" id="c6"></div>
+                    <div class="card" id="c7"></div>
+                    <div class="card" id="c8"></div>
+                </article>
 
-                <div class="nombrecliente-cel-direccion">
-                    <div class="nombre-container">
-                        <label for="clienteName">Nombre cliente: </label><br>
-                        <input type="text" name="clienteName">
-                    </div>
-
-                    <div class="cel-container">
-                        <label for="cel">Celular: </label><br>
-                        <input type="number" name="cel">
-                    </div>
-
-                    <div class="direccion-container">
-                        <label for="direccion">Direccion: </label><br>
-                        <input type="number" name="direccion">
-                    </div>
-                </div>
             </div>
         </section>
-        <section class="comprobante recuadro-gris">
-            <div class="comprobante-container">
-                <label for="comprobante">Tipo de Comprobante</label>
-                <select name="comprobante" id="">
-                    <option value="recibo">Recibo</option>
-                    <option value="facturaA">Factura A</option>
-                    <option value="facturaB">Factura B</option>
-                    <option value="remito">Remito</option>
-                    <option value="otros">Otros</option>
-                </select>
 
-            </div>
-            <div class="finalizar">
-                <button>FINALIZAR VENTA</button>
-                <button>CANCELAR VENTA</button>
-            </div>
-
-        </section>
+        </div>
     </main>
     <footer>
 
     </footer>
-
 </body>
 
 </html>

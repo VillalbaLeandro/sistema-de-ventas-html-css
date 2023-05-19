@@ -1,0 +1,3 @@
+el archivo SISTEMA es la interfaz de lo que seria el sistema del vendedor. 
+El index esta hecho en mobile-first(para dispositivos moviles primero, despues lo haremos para desktop). El sitio va a ser responsive. 
+los registros y login fueron hehcos con otros diseños para la practica. Tendran todos el mismo diseño y paleta de colores del index.

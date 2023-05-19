@@ -1,0 +1,164 @@
+:root {
+    --icon: wheat;
+}
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: black;
+}
+
+img {
+    width: 100%;
+}
+
+header {
+    background: black;
+
+}
+
+a{
+    text-decoration: none;
+    color: var(--icon)
+}
+i {
+    color: var(--icon);
+    padding: 10px;
+    margin-left: 19px;
+    font-size: 20px;
+}
+
+.logo-container {
+    color: white;
+    display: flex;
+    padding: 16px 30px;
+    width: 100%;
+}
+
+.menu-hamburguesa-container {
+    position: relative;
+}
+
+.logo-container img {
+    width: 57%;
+}
+
+.burguer-navbar-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-login-container {
+    display: flex;
+}
+
+.login-register {
+    display: flex;
+}
+
+.menu-navbar {
+    color: wheat;
+    padding: 28px;
+    text-decoration: none;
+    position: absolute;
+    left: -100%;
+    opacity: 0;
+    border-radius: 2px;
+    border: 1px solid wheat;
+    transition: all 1s;
+
+}
+
+.menu-navbar li {
+    list-style: none;
+    margin-bottom: 22px;
+}
+
+.logout-icon {
+    display: none;
+}
+
+.login,
+.register {
+    color: var(--icon);
+    padding: 0 5px;
+
+}
+
+.menu-hamburguesa-container:hover~.menu-navbar {
+    opacity: 1;
+    background-color: black;
+    left: 0;
+}
+
+
+/* FIN HEADER ------------------------------------------- */
+.seccion-bienvenida {
+    display: flex;
+}
+
+.bienvenidos {
+    margin: 20px 0;
+    color: white;
+    text-align: center;
+    font-size: 40%;
+    font-family: 'Wix Madefor Display', sans-serif;
+    font-weight: 300;
+}
+
+.bienvenidos-title {
+    color: wheat;
+    font-size: 250%;
+}
+
+.slider {
+    width: 208%;
+}
+
+.logo-container-bienvenida img {
+    width: 30%;
+    margin-bottom: 10px;
+
+}
+
+/* SOBRE NOSOTROS------------------------ */
+
+
+
+
+.sobre-nosotros {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h3 {
+    margin-top: 20px;
+    color: wheat;
+    font-family: 'Wix Madefor Display', sans-serif;
+    text-align: center;
+}
+
+
+p {
+    margin: 20px 0;
+    color: white;
+    text-align: center;
+    font-size: 70%;
+    font-family: 'Wix Madefor Display', sans-serif;
+    font-weight: 300;
+    
+}
+
+.sobre-nosotros-p {
+    max-width: 250px;
+}
+
+
+
