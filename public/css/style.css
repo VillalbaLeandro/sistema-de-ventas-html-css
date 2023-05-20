@@ -23,10 +23,11 @@ header {
 
 }
 
-a{
+a {
     text-decoration: none;
     color: var(--icon)
 }
+
 i {
     color: var(--icon);
     padding: 10px;
@@ -98,6 +99,7 @@ i {
 }
 
 
+
 /* FIN HEADER ------------------------------------------- */
 .seccion-bienvenida {
     display: flex;
@@ -153,7 +155,7 @@ p {
     font-size: 70%;
     font-family: 'Wix Madefor Display', sans-serif;
     font-weight: 300;
-    
+
 }
 
 .sobre-nosotros-p {
@@ -162,3 +164,30 @@ p {
 
 
 
+/* FOOTERRR-------------------- */
+footer{
+    margin: 20px 0;
+}
+.buttons {
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.buttons a {
+    text-decoration: none;
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background: var(--icon);
+    color: black;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, .5);
+    transition: all .4s ease-in-out;
+}
+
+.buttons a:hover {
+    transform: scale(1.2);
+}

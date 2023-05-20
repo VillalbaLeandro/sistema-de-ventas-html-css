@@ -150,3 +150,71 @@
 #c8:hover {
     transform: translateX(50px) rotate(0deg) !important;
 }
+
+
+/* hielos.-------------------------- */
+
+#c9 {
+    background-image: url(https://media.gettyimages.com/id/530608015/es/vector/bolsa-de-hielo-con-taz%C3%B3n-y-beber-copas.jpg?s=612x612&w=gi&k=20&c=ZXP8nVijiH4T17TKu5Y7SXiAwdcQ1jogRaMbjaPUa04=);
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#c10 {
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQps9NqvSTMx9la29kqZCBnbryX3DnO96Lqvg&usqp=CAU);
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#c11 {
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYcN346Qbu4A3E1fsfcBafYV_8MopcWlAc-w&usqp=CAU);
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#c12 {
+    background-image: url(https://scontent.faep6-2.fna.fbcdn.net/v/t39.30808-6/293484042_2230434537116660_8199812009569986062_n.jpg?stp=dst-jpg_p843x403&_nc_cat=109&ccb=1-7&_nc_sid=8bfeb9&_nc_eui2=AeHcZcyLh9im75fNqyU519D5MJHYIT04SjMwkdghPThKMzPqG_79m4KWnvf4EMAfNVI&_nc_ohc=Ckme_Iw52c8AX-ZoSFR&_nc_ht=scontent.faep6-2.fna&oh=00_AfBP9yXJMjprNY6Xt0W7Tp1KAhg71l6uOHxd6rRadvHYEg&oe=646CA6A3);
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.main:hover #c9 {
+    transform: translateX(-100px) rotate(-40deg);
+}
+
+.main:hover #c10 {
+    transform: translateX(-50px) rotate(-30deg);
+}
+
+.main:hover #c11 {
+    transform: translateX(0) rotate(-20deg);
+}
+
+.main:hover #c12 {
+    transform: translateX(50px) rotate(-10deg);
+}
+
+#c9:hover {
+    transform: translateX(-150px) rotate(0deg) !important;
+}
+
+#c10:hover {
+    transform: translateX(-100px) rotate(0deg) !important;
+}
+
+#c11:hover {
+    transform: translateX(-50px) rotate(0deg) !important;
+}
+
+#c12:hover {
+    transform: translateX(50px) rotate(0deg) !important;
+}
