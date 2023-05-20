@@ -20,7 +20,13 @@ img {
 
 header {
     background: black;
+    position: fixed;
+    top: 0;
+    z-index: 10;
 
+}
+main{
+    margin-top: 32%;
 }
 
 a {
@@ -80,6 +86,9 @@ i {
     list-style: none;
     margin-bottom: 22px;
 }
+.menu-navbar li:hover {
+    background-color: rgb(56, 50, 38);
+}
 
 .logout-icon {
     display: none;
@@ -92,11 +101,6 @@ i {
 
 }
 
-.menu-hamburguesa-container:hover~.menu-navbar {
-    opacity: 1;
-    background-color: black;
-    left: 0;
-}
 
 
 
@@ -162,11 +166,25 @@ p {
     max-width: 250px;
 }
 
+/* locatiooon---------------------------- */
+
+.maps-location{
+    width: 95vw;
+    max-height: 400px;
+}
+div .maps-location iframe{
+    width: 100%;
+}
+
 
 
 /* FOOTERRR-------------------- */
 footer{
     margin: 20px 0;
+}
+hr{
+    border: wheat 1px solid;
+    margin-bottom: 6%;
 }
 .buttons {
     display: flex;

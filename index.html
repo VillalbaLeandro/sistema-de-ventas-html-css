@@ -35,28 +35,36 @@
                 <div class="menu-navbar">
                     <ul>
                         <li>
-                            <p>
+                            <p><a href="/index.html">
                                 Inicio
+                            </a>
                             </p>
                         </li>
                         <li>
-                            <p>
-                                Sobre Mi
+                            <p><a href="#nosotros">
+                                Nosotros
+                            </a>
                             </p>
                         </li>
                         <li>
-                            <p>
-                                Preguntas Frecuentes
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                Productos
-                            </p>
-                        </li>
-                        <li>
-                            <p>
+                            <p><a href="#contacto">
                                 Contacto
+
+                            </a>
+                            </p>
+                        </li>
+                        <li>
+                            <p><a href="#ubicacion">
+                                Ubicacion
+
+                            </a>
+                            </p>
+                        </li>
+                        <li>
+                            <p><a href="#redes">
+                                Redes
+
+                            </a>
                             </p>
                         </li>
                     </ul>
@@ -101,7 +109,7 @@
 
         </section>
         <div class="sobre-nosotros">
-            <section id="sobre-nosotros"">
+            <section id="nosotros">
                  <h3> SOBRE NOSOTROS </h3>
                  <div class=" sobre-nosotros-p">
 
@@ -117,7 +125,7 @@
         </div>
         </section>
         <h3> NUESTROS PRODUCTOS </h3>
-        <section class="products-section">
+        <section class="products-section" id="productos">
             <div class="cervezas">
                 <h3>CERVEZAS</h3>
                 <article class="main">
@@ -147,7 +155,8 @@
                 </article>
             </div>
         </section>
-        <section class="contacto">
+        <section class="contacto" id="contacto">
+            <hr>
             <div class="contactanos-texto">
                 <h3>CONTACTÁNOS</h3>
                 <p>Av. Blas Parera 6155</p>
@@ -158,11 +167,13 @@
                 <img src="https://w.forfun.com/fetch/ab/ab4b6cb9605b3a36d87fa138ee02cabc.jpeg" alt="">
             </div>
         </section>
-        <section class="ubicacion">
+        <section class="ubicacion" id="ubicacion">
+            <br>
+            <hr>
             <h3>NUESTRA UBICACIÓN</h3>
             <br>
-            <div class="maps-location">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1601.2109658400473!2d-55.93713755996546!3d-27.373778811645384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9457bde2be6117ff%3A0x5ffecd747d7819df!2sAv.%20Blas%20Parera%206155%2C%20N3300LWN%20Posadas%2C%20Misiones!5e0!3m2!1ses!2sar!4v1684558063711!5m2!1ses!2sar"  style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="maps-location" width="98vw">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1601.2109658400473!2d-55.93713755996546!3d-27.373778811645384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9457bde2be6117ff%3A0x5ffecd747d7819df!2sAv.%20Blas%20Parera%206155%2C%20N3300LWN%20Posadas%2C%20Misiones!5e0!3m2!1ses!2sar!4v1684558063711!5m2!1ses!2sar"  style="border:0;" allowfullscreen="" loading="lazy"  referrerpolicy="no-referrer-when-downgrade"></iframe>
 
             </div>
         </section>
@@ -170,10 +181,11 @@
     </main>
     <footer>
         <h3>DRINKSTORE®</h3>
-        <P>all rights reserved 2002-2023</P>
+        <P>all rights reserved 2000-2023</P>
         <div class="redes-container">
             <p>seguinos en nuestras redes:</p>
-            <div class="logos-redes">
+            <hr>
+            <div class="logos-redes" id="redes">
                 <section class="buttons">
                     <a href="#" class="fa fa-facebook"></a>
                     <a href="#" class="fa fa-twitter"></a>
@@ -186,5 +198,5 @@
         </div>
     </footer>
 </body>
-
+<script src="./public/js/index.js"></script>
 </html>
