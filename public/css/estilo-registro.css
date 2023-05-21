@@ -7,7 +7,7 @@
 body {
     font-family: Arial;
     background: linear-gradient(-45deg,
-    #000000, #0f0f0f, #141414, #000000, #161616);
+    #000000, #0f0f0f, #303030, #000000, #161616);
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
 
@@ -22,7 +22,7 @@ body {
     margin-top: 180px;
     box-shadow: 7px 13px 37px #000;
     padding: 20px 30px;
-    border-top: 4px solid#017bab;
+    border-top: 4px solid#000000;
     color: white;
 
     border-radius: 4px;
@@ -42,7 +42,7 @@ body {
 
 .controls {
     width: 100%;
-    border: 1px solid#017bab;
+    border: 1px solid#000000;
     margin-bottom: 15px;
     padding: 10px;
     background: #252323;
@@ -55,7 +55,7 @@ body {
 .boton {
     width: 100%;
     height: 40px;
-    background: #017bab;
+    background: #000000;
     border: none;
     color: white;
     margin-bottom: 16px;
@@ -104,7 +104,7 @@ body {
     background-color: #45a049;
   }
 .boton:hover {
-    background-color: #015a79;
+    background-color: #161616;
     cursor: pointer;
 }
 .boton2:hover {
