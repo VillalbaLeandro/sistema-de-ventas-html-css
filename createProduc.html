@@ -25,7 +25,7 @@
 <body>
     <header>
         <div class="logo-container">
-            <a href="./index.html"> <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore"></a>
+            <a href="./index.html"><img src="./public/images/logos/logo-white.png" alt="logo-drinkstore"></a>
         </div>
         <div class="burguer-navbar-container">
             <div class="menu-container">
@@ -67,6 +67,11 @@
                             </a>
                             </p>
                         </li>
+                        <li>
+                            <p>
+                                <a href="./createProduc.html">Crear Producto</a>
+                            </p>
+                    </li>
                     </ul>
                 </div>
             </div>
@@ -78,7 +83,6 @@
                     <i class="fa-solid fa-right-from-bracket logout-icon"></i>
                 </div>
                 <div class="login-register">
-                    
                     <div class="login-cont">
                         <p class="login">
                             <a href="./login.html">Login</a>
@@ -95,17 +99,29 @@
     </header>
 
     <form class="form-registro" >
-        <h5>Formulario de Registro</h5>
-        <input class="controls" type="text" name="nombre" value="" placeholder="  Ingrese su Nombre">
-        <input class="controls" type="text" name="apellido" value="" placeholder="  Ingrese su Apellido">
-        <input class="controls" type="text" name="mail" value="" placeholder="  Ingrese su Mail">
-        <input class="controls" type="text" name="cuil-cuit" value="" placeholder="  Ingrese su CUIL/CUIT">
-        <input class="controls" type="number" name="telNum" value="" placeholder="  Ingrese su Telefono">
-        <input class="controls" type="text" name="direccion" value="" placeholder="  Ingrese su Direccion">
-        <input class="controls" type="password" name="pass" value="" placeholder="  Ingrese su contrasena">
-        <input class="boton" type="submit" name="" value="Registrar">
-        <a class="boton2" href="index.html">Volver a la página principal</a>
-        <p>Ya tienes una cuenta?<a href="./login.html"> Inicia Sesión </a></p>
+        <h5>Crear Producto</h5>
+        <input class="controls" type="text" name="nombre" value="" placeholder="  Nombre Producto">
+        <input class="controls" type="file" name="img-produc" id="">
+        <input class="controls" type="text" name="apellido" value="" placeholder=" Descripcion">
+        <input class="controls" type="text" name="mail" value="" placeholder="  Precio Costo">
+        <input class="controls" type="text" name="cuil-cuit" value="" placeholder="  Precio Venta">
+        <input class="controls" type="number" name="telNum" value="" placeholder="  Stock">
+        <input class="controls" type="text" name="direccion" value="" placeholder="  Stock Minimo">
+        <select name="categoria" id="" class="controls">
+            <option value="cerveza">cerveza</option>
+            <option value="vino">vino</option>
+            <option value="whisky">whisky</option>
+            <option value="licor">licor</option>
+            <option value="vodka">vodka</option>
+            <option value="gaseosa">gaseosa</option>
+            <option value="agua">agua</option>
+            <option value="agua-saborizada">agua saborizada</option>
+            <option value="snack">snack</option>
+            <option value="cigarrillo">cigarrillo</option>
+            <option value="hielo">hielo</option>
+        </select>
+        <input class="boton" type="submit" name="" value="CREAR PRODUCTO">
+        <p><a href="./index.html">cancelar</a></p>
 
     </form>
 </body>
