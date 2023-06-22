@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="./public/css/style.css">
     <link rel="stylesheet" href="./public/css/header.css">
     <link rel="stylesheet" href="./public/css/products.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <title>Document</title>
 </head>
 
@@ -103,7 +105,7 @@
     <main>
         <section id="bienvenida" class="seccion-bienvenida">
 
-            <div class="bienvenidos">
+            <div class="bienvenidos" data-aos="fade-up">
                 <h2 class="bienvenidos-title">BIENVENIDOS A </h2>
                 <div class="logo-container-bienvenida">
                     <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore">
@@ -111,13 +113,13 @@
                 <h2 class="bienvenidos-subtitle">Tenemos una amplia variedad de productosE</h2>
                 <h2 class="bienvenidos-horario">Atencion las 24hs. 7 dias a la semana</h2>
             </div>
-            <div class="slider">
+            <div class="slider" data-aos="fade-left">
                 <img src="./public/images/drink1.jpg" alt="">
             </div>
 
         </section>
         <div class="sobre-nosotros">
-            <section id="nosotros">
+            <section id="nosotros" data-aos="fade-up">
                  <h3> SOBRE NOSOTROS </h3>
                  <div class=" sobre-nosotros-p">
 
@@ -132,9 +134,9 @@
                 </p>
         </div>
         </section>
-        <h3> NUESTROS PRODUCTOS </h3>
-        <section class="products-section" id="productos">
-            <div class="cervezas">
+        <section class="products-section" id="productos" >
+            <div class="cervezas" data-aos="fade-right" >
+                <h3 > NUESTROS PRODUCTOS </h3>
                 <h3>CERVEZAS</h3>
                 <article class="main">
                     <div class="card" id="c1"></div>
@@ -144,7 +146,7 @@
                 </article>
 
             </div>
-            <div class="vinos">
+            <div class="vinos" data-aos="fade-left">
                 <h3>VINOS</h3>
                 <article class="main">
                     <div class="card" id="c5"></div>
@@ -153,7 +155,7 @@
                     <div class="card" id="c8"></div>
                 </article>
             </div>
-            <div class="hielos">
+            <div class="hielos" data-aos="fade-right">
                 <h3>HIELOS</h3>
                 <article class="main">
                     <div class="card" id="c9"></div>
@@ -163,19 +165,19 @@
                 </article>
             </div>
         </section>
-        <section class="contacto" id="contacto">
+        <section class="contacto" id="contacto" data-aos="fade-up">
             <hr>
-            <div class="contactanos-texto">
+            <div class="contactanos-texto" data-aos="fade-up">
                 <h3>CONTACTÁNOS</h3>
                 <p>Av. Blas Parera 6155</p>
                 <p>drinkstore@24horas.com</p>
                 <p>+54 376 4 329985</p>
             </div>
-            <div class="img-contact-contaier">
+            <div class="img-contact-contaier" data-aos="fade-up">
                 <img src="https://w.forfun.com/fetch/ab/ab4b6cb9605b3a36d87fa138ee02cabc.jpeg" alt="">
             </div>
         </section>
-        <section class="ubicacion" id="ubicacion">
+        <section class="ubicacion" id="ubicacion" data-aos="fade-up">
             <br>
             <hr>
             <h3>NUESTRA UBICACIÓN</h3>
@@ -187,13 +189,13 @@
         </section>
         </div>
     </main>
-    <footer>
+    <footer data-aos="fade-up">
         <h3>DRINKSTORE®</h3>
         <P>all rights reserved 2000-2023</P>
         <div class="redes-container">
             <p>seguinos en nuestras redes:</p>
             <hr>
-            <div class="logos-redes" id="redes">
+            <div class="logos-redes" id="redes" data-aos="fade-up">
                 <section class="buttons">
                     <a href="#" class="fa fa-facebook"></a>
                     <a href="#" class="fa fa-twitter"></a>
@@ -207,4 +209,10 @@
     </footer>
 </body>
 <script src="./public/js/index.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1500
+  });
+</script>
 </html>
