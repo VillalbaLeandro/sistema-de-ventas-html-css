@@ -9,8 +9,10 @@ header {
     top: 0;
     z-index: 10;
 
+
 }
-main{
+
+main {
     margin-top: 32%;
 }
 
@@ -31,6 +33,7 @@ i {
     display: flex;
     padding: 16px 30px;
     width: 100%;
+    max-width: 500px;
 }
 
 .menu-hamburguesa-container {
@@ -62,7 +65,9 @@ i {
     left: -100%;
     opacity: 0;
     border-radius: 2px;
-    border: 1px solid wheat;
+    border-width: 0px 2px 2px 0px;
+    border-style: solid;
+    border-color: wheat;
     transition: all 1s;
 
 }
@@ -71,6 +76,7 @@ i {
     list-style: none;
     margin-bottom: 22px;
 }
+
 .menu-navbar li:hover {
     background-color: rgb(56, 50, 38);
 }
@@ -84,4 +90,14 @@ i {
     color: var(--icon);
     padding: 0 5px;
 
+}
+
+@media (min-width: 1250px) {
+    header {
+        width: 80%;
+    }
+
+    main {
+        margin-top: 15%;
+    }
 }

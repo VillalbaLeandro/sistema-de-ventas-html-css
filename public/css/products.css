@@ -218,3 +218,9 @@
 #c12:hover {
     transform: translateX(50px) rotate(0deg) !important;
 }
+@media (min-width: 720px){
+    .main {
+        height: 20vmax;
+      }
+    
+}
