@@ -111,6 +111,49 @@ body {
 }
 
 
+label{
+    color: rgb(255, 255, 255);
+    font-weight: 800;
+    padding: 4px;
+    margin-bottom: 7px;
+}
+/* Estilo para la etiqueta select */
+select.controls {
+    width: 100%;
+    border: 1px solid #000000;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #252323;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    appearance: none; /* Oculta el estilo por defecto del select */
+}
+
+/* Estilo para las opciones del menú desplegable */
+select.controls option {
+    background: black;
+    color: white;
+}
+
+/* Estilo para la flecha del select */
+select.controls::-ms-expand {
+    display: none; /* Oculta la flecha en Internet Explorer */
+}
+
+/* Estilo para el hover del select */
+select.controls:hover {
+    cursor: pointer;
+}
+
+/* Estilo para el focus del select */
+select.controls:focus {
+    outline: none; /* Elimina el contorno al hacer focus */
+    border-color: #000000;
+}
+
+
 /* @keyframes gradient {
     0% {
         background-position: 0% 50%;

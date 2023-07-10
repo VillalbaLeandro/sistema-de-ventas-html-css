@@ -94,15 +94,24 @@
         </div>
     </header>
 
-    <form class="form-registro" >
+    <form class="form-registro" action="php/insertar_usuario.php" method="POST">
         <h5>Formulario de Registro</h5>
-        <input class="controls" type="text" name="nombre" value="" placeholder="  Ingrese su Nombre">
-        <input class="controls" type="text" name="apellido" value="" placeholder="  Ingrese su Apellido">
-        <input class="controls" type="text" name="mail" value="" placeholder="  Ingrese su Mail">
-        <input class="controls" type="text" name="cuil-cuit" value="" placeholder="  Ingrese su CUIL/CUIT">
-        <input class="controls" type="number" name="telNum" value="" placeholder="  Ingrese su Telefono">
-        <input class="controls" type="text" name="direccion" value="" placeholder="  Ingrese su Direccion">
-        <input class="controls" type="password" name="pass" value="" placeholder="  Ingrese su contrasena">
+        <input class="controls" type="text" name="nombre"  placeholder="  Ingrese su Nombre" required>
+        <input class="controls" type="text" name="apellido"  placeholder="  Ingrese su Apellido"required>
+        <input class="controls" type="text" name="mail"  placeholder="  Ingrese su Mail">
+        <input class="controls" type="text" name="cuil-cuit"  placeholder="  Ingrese su CUIL/CUIT">
+        <input class="controls" type="number" name="telNum"  placeholder="  Ingrese su Telefono"required>
+        <input class="controls" type="text" name="direccion"  placeholder="  Ingrese su Direccion">
+        <label for="tipo_cliente">Seleccione su categoria</label>
+        <select class="controls" name="tipo_cliente" id="tipo_cliente" placeholder="ingrese su cateogria">
+            <option value="1">Responsable Inscripto</option>
+            <option value="2">Responsable NO Inscripto</option>
+            <option value="2">Monotributista</option>
+            <option value="2">Exento</option>
+            <option value="2">Consumidor Final</option>
+        </select>
+        <input class="controls" type="password" name="pass"  placeholder="  Ingrese su contrasena" required>
+        <input class="controls" type="password" name="confirmPass"  placeholder="  Ingrese su contrasena nuevamente" required>
         <input class="boton" type="submit" name="" value="Registrar">
         <a class="boton2" href="index.html">Volver a la página principal</a>
         <p>Ya tienes una cuenta?<a href="./login.html"> Inicia Sesión </a></p>
