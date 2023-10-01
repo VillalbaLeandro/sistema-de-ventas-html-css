@@ -1,20 +1,4 @@
-<?php
-include("./head.php");
-?>
-<title>DRINKSTORE®</title>
-</head>
-
-    <title>Formulario de Registro</title>
-    <link rel="stylesheet" href="./public/css/header.css">
-    <link rel="stylesheet" href="./public/css/estilos-formularios.css">
-</head>
-
-<body>
-    <header>
-        <div class="logo-container">
-            <a href="./index.php"><img src="./public/images/logos/logo-white.png" alt="logo-drinkstore"></a>
-        </div>
-        <div class="burguer-navbar-container">
+<div class="burguer-navbar-container">
             <div class="menu-container">
                 <div class="menu-hamburguesa-container">
                     <i class="fa-solid fa-bars"></i>
@@ -22,7 +6,7 @@ include("./head.php");
                 <div class="menu-navbar">
                     <ul>
                         <li>
-                            <p><a href="/index.php">
+                            <p><a href="./index.php">
                                 Inicio
                             </a>
                             </p>
@@ -55,10 +39,10 @@ include("./head.php");
                             </p>
                         </li>
                         <li>
-                            <p>
-                                <a href="./createProduc.html">Crear Producto</a>
-                            </p>
-                    </li>
+                                <p>
+                                    <a href="./ventas/index.php">- VENTAS -</a>
+                                </p>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -71,6 +55,7 @@ include("./head.php");
                 </div>
                 <div class="login-register">
                     <div class="login-cont">
+                        
                         <p class="login">
                             <a href="./login.php">Login</a>
                         </p>
@@ -83,31 +68,3 @@ include("./head.php");
                 </div>
             </div>
         </div>
-    </header>
-
-    <form class="form-registro" >
-        <h5>Crear Producto</h5>
-        <input class="controls" type="text" name="nombre" value="" placeholder="  Nombre Producto">
-        <input class="controls" type="text" name="descripcion" value="" placeholder=" Descripcion">
-        <input class="controls" type="number" name="precioCosto" value="" placeholder="  Precio Costo">
-        <input class="controls" type="number" name="precioVenta" value="" placeholder="  Precio Venta">
-        <input class="controls" type="number" name="stock" value="" placeholder="  Stock">
-        <input class="controls" type="number" name="stockMinimo" value="" placeholder="  Stock Minimo">
-        <select name="categoria" id="" class="controls">
-            <option value="1">cerveza</option>
-            <option value="2">vino</option>
-            <option value="3">whisky</option>
-            <option value="4">licor</option>
-            <option value="5">vodka</option>
-            <option value="6">gaseosa</option>
-            <option value="7">agua</option>
-            <option value="8">agua saborizada</option>
-            <option value="9">snack</option>
-            <option value="10">cigarrillo</option>
-            <option value="11">hielo</option>
-        </select>
-        <input class="boton" type="submit" name="" value="CREAR PRODUCTO">
-        <p><a href="./index.php">cancelar</a></p>
-
-    </form>
-</body>

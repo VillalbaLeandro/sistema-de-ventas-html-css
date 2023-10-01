@@ -1,31 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/fc1047b7d0.js" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600&display=swap"
-        rel="stylesheet">
+<?php
+include("./head.php");
+?>
     <title>Formulario de Registro</title>
     <link rel="stylesheet" href="./public/css/header.css">
-    <link rel="stylesheet" href="./public/css/estilo-registro.css">
+    <link rel="stylesheet" href="./public/css/estilos-formularios.css">
 </head>
 
 <body>
     <header>
         <div class="logo-container">
-            <a href="./index.html"> <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore"></a>
+            <a href="./index.php"> <img src="./public/images/logos/logo-white.png" alt="logo-drinkstore"></a>
         </div>
         <div class="burguer-navbar-container">
             <div class="menu-container">
@@ -35,7 +19,7 @@
                 <div class="menu-navbar">
                     <ul>
                         <li>
-                            <p><a href="/index.html">
+                            <p><a href="/index.php">
                                 Inicio
                             </a>
                             </p>
@@ -81,12 +65,12 @@
                     
                     <div class="login-cont">
                         <p class="login">
-                            <a href="./login.html">Login</a>
+                            <a href="./login.php">Login</a>
                         </p>
                     </div>
                     <div class="register">
                         <p>
-                            <a href="./registro.html">Registro</a>
+                            <a href="./registro.php">Registro</a>
                         </p>
                     </div>
                 </div>
@@ -94,21 +78,20 @@
         </div>
     </header>
 
-    <form class="form-registro" action="php/insertar_usuario.php" method="POST">
+    <form class="form-registro" action="php/insertar_cliente.php" method="POST">
         <h5>Formulario de Registro</h5>
         <input class="controls" type="text" name="nombre"  placeholder="  Ingrese su Nombre" required>
         <input class="controls" type="text" name="apellido"  placeholder="  Ingrese su Apellido"required>
+        <input class="controls" type="date"  name="fechaNacimiento"  placeholder="  Su fecha de nacimiento"required>
         <input class="controls" type="text" name="mail"  placeholder="  Ingrese su Mail">
-        <input class="controls" type="text" name="cuil-cuit"  placeholder="  Ingrese su CUIL/CUIT">
+        <input class="controls" type="number" name="dni"  placeholder="  Ingrese su DNI">
+        <input class="controls" type="number" name="cuil-cuit"  placeholder="  Ingrese su CUIL/CUIT">
         <input class="controls" type="number" name="telNum"  placeholder="  Ingrese su Telefono"required>
         <input class="controls" type="text" name="direccion"  placeholder="  Ingrese su Direccion">
         <label for="tipo_cliente">Seleccione su categoria</label>
         <select class="controls" name="tipo_cliente" id="tipo_cliente" placeholder="ingrese su cateogria">
             <option value="1">Responsable Inscripto</option>
             <option value="2">Responsable NO Inscripto</option>
-            <option value="2">Monotributista</option>
-            <option value="2">Exento</option>
-            <option value="2">Consumidor Final</option>
             <option value="3">Monotributista</option>
             <option value="4">Exento</option>
             <option value="5">Consumidor Final</option>
@@ -116,8 +99,9 @@
         <input class="controls" type="password" name="pass"  placeholder="  Ingrese su contrasena" required>
         <input class="controls" type="password" name="confirmPass"  placeholder="  Ingrese su contrasena nuevamente" required>
         <input class="boton" type="submit" name="" value="Registrar">
-        <a class="boton2" href="index.html">Volver a la página principal</a>
-        <p>Ya tienes una cuenta?<a href="./login.html"> Inicia Sesión </a></p>
+        <p>
+        <a  href="index.php">Volver a la página principal</a> <br>
+        Ya tienes una cuenta?<a href="./login.php"> Inicia Sesión </a></p>
 
     </form>
 </body>
