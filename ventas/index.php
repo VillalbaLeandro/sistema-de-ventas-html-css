@@ -33,9 +33,9 @@ $productosMasVendidos = obtenerProductosMasVendidos();
 	<div class="card-deck row mb-2">
 	<?php foreach($totales as $total){?>
 		<div class="col-xs-12 col-sm-6 col-md-3" >
-			<div class="card text-center">
+			<div class="card text-center shadow-sm mb-5 border-0 " style="height: 82%">
 				<div class="card-body">
-					<img class="img-thumbnail" src="<?= $total['../public/images/index/productos.png']?>" alt="">
+					<img class="img-thumbnail" style="height: 40%" src="<?= $total['imagen']?>" alt="">
 					<h4 class="card-title" >
 						<?= $total['nombre']?>
 					</h4>
