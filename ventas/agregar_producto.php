@@ -50,7 +50,7 @@ include_once "funciones.php";
                 <input type="number" name="precio_venta" step="any" id="precio_venta" class="form-control" placeholder="Precio para la venta" aria-label="">
             </div>
             <div class="col">
-                <label for="existencia" class="form-label">Stock</label>
+                <label for="stock" class="form-label">Stock</label>
                 <input type="number" name="stock" step="any" id="stock" class="form-control" placeholder="stock" aria-label="">
             </div>
         </div>
