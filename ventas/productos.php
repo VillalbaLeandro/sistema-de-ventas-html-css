@@ -2,9 +2,9 @@
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
-// session_start();
+session_start();
 
-// if(empty($_SESSION['usuario'])) header("location: login.php");
+if(empty($_SESSION['nombre'])) header("location: login.php");
 $nombreProducto = (isset($_POST['nombreProducto'])) ? $_POST['nombreProducto'] : null;
 
 $productos = obtenerProductos($nombreProducto);

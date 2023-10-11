@@ -2,8 +2,8 @@
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
-// session_start();
-// if(empty($_SESSION['usuario'])) header("location: login.php");
+session_start();
+if(empty($_SESSION['nombre'])) header("location: login.php");
 $cartas = [
     ["titulo" => "Total ventas", "icono" => "fa fa-money-bill", "total" => "$".obtenerTotalVentas(), "color" => "#A71D45"],
     ["titulo" => "Ventas hoy", "icono" => "fa fa-calendar-day", "total" => "$".obtenerTotalVentasHoy(), "color" => "#2A8D22"],
@@ -27,7 +27,7 @@ $productosMasVendidos = obtenerProductosMasVendidos();
 	<div class="alert alert-info" role="alert">
 		<h1>
 			Hola, Admin
-			<!-- Hola, <?= $_SESSION['usuario']?> -->
+			<!-- Hola, <?= $_SESSION['nombre']?> -->
 		</h1>
 	</div>
 	<div class="card-deck row mb-2">

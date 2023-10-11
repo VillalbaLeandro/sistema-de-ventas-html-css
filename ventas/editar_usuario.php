@@ -1,9 +1,9 @@
 <?php
 include_once "encabezado.php";
 include_once "navbar.php";
-// session_start();
+session_start();
 
-// if(empty($_SESSION['usuario'])) header("location: login.php");
+if(empty($_SESSION['nombre'])) header("location: login.php");
 
 $id = $_GET['id'];
 if (!$id) {
@@ -69,8 +69,6 @@ if (isset($_POST['registrar'])) {
         || empty($telefono)
         || empty($direccion)
         || empty($email)
-        || empty($password)
-        || empty($confirmPassword)
     ) {
         echo '
         <div class="alert alert-danger mt-3" role="alert">
