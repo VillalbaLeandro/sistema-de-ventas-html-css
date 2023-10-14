@@ -407,43 +407,38 @@ function obtenerIvas()
     $sentencia = "SELECT id, nombre FROM iva";
     return select($sentencia);
 }
-function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario){
+function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario) {
     $parametros = [];
-    $sentencia  = "SELECT venta.*, usuario.nombre, IFNULL(cliente.nombre, 'MOSTRADOR') AS cliente
+    $sentencia = "SELECT venta.*, usuario.nombre, IFNULL(cliente.nombre, 'MOSTRADOR') AS cliente
     FROM venta
     INNER JOIN usuario ON usuario.id = venta.usuario_id
-    LEFT JOIN cliente ON cliente.id = venta.cliente_id";
+    LEFT JOIN cliente ON cliente.id = venta.cliente_id
+    WHERE 1 = 1"; // Inicio de la consulta
 
-    if(isset($usuario)){
-        $sentencia .= " WHERE venta.usuario_id = ?";
-        array_push($parametros, $usuario);
-        $ventas = select($sentencia, $parametros);
-        return agregarProductosVendidos($ventas);
-    }
-
-    if(isset($cliente)){
-        $sentencia .= " WHERE venta.cliente_id = ?";
-        array_push($parametros, $cliente);
-        $ventas = select($sentencia, $parametros);
-        return agregarProductosVendidos($ventas);
-    }
-
-    if(empty($fechaInicio) && empty($fechaFin)){
-        $sentencia .= " WHERE DATE(venta.fecha) = ? ";
-        array_push($parametros, HOY);
-        $ventas = select($sentencia, $parametros);
-        return agregarProductosVendidos($ventas);
-    }
-
-    if(isset($fechaInicio) && isset($fechaFin)){
-        $sentencia .= " WHERE DATE(venta.fecha) >= ? AND DATE(venta.fecha) <= ?";
+    // Agregar filtro por fecha si es necesario
+    if (isset($fechaInicio) && isset($fechaFin)) {
+        $sentencia .= " AND DATE(venta.fecha) BETWEEN ? AND ?";
         array_push($parametros, $fechaInicio, $fechaFin);
     }
 
+    // Agregar filtro por cliente si es necesario
+    if (isset($cliente)) {
+        $sentencia .= " AND venta.cliente_id = ?";
+        array_push($parametros, $cliente);
+    }
+
+    // Agregar filtro por usuario si es necesario
+    if (isset($usuario)) {
+        $sentencia .= " AND venta.usuario_id = ?";
+        array_push($parametros, $usuario);
+    }
+
     $ventas = select($sentencia, $parametros);
-   
+
     return agregarProductosVendidos($ventas);
 }
+
+
 function agregarProductosVendidos($ventas){
     foreach($ventas as $venta){
         $venta->productos = obtenerProductosVendidos($venta->id);
