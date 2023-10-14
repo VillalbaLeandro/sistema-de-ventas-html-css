@@ -1,6 +1,10 @@
 <?php   
+session_start();
+if (empty($_SESSION['nombre'])) {
+    header("location: login.php");
+    exit;
+}
     include_once "funciones.php";
-    session_start();
     if(isset($_POST['agregar'])){
         echo "agregar";
         if(isset($_POST['codigo'])) {
@@ -22,5 +26,3 @@
             header("location: vender.php");
         }
     }
-
-?>

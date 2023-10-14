@@ -1,8 +1,10 @@
 <?php
+session_start();
+
 include_once "encabezado.php";
 
-if(isset($_POST['nombre']) && isset($_POST['password'])){
-    if(empty($_POST['nombre']) || empty($_POST['password'])){
+if (isset($_POST['nombre']) && isset($_POST['password'])) {
+    if (empty($_POST['nombre']) || empty($_POST['password'])) {
         echo '
         <div class="alert alert-warning mt-3" role="alert">
             Debes completar todos los datos.
@@ -16,11 +18,10 @@ if(isset($_POST['nombre']) && isset($_POST['password'])){
     $usuario = $_POST['nombre'];
     $password = $_POST['password'];
 
-    session_start();
 
     $datosSesion = iniciarSesion($usuario, $password);
 
-    if(!$datosSesion){
+    if (!$datosSesion) {
         echo '
         <div class="alert alert-danger mt-3" role="alert">
             Nombre de usuario y/o contraseña incorrectas.
@@ -34,4 +35,3 @@ if(isset($_POST['nombre']) && isset($_POST['password'])){
     header("location: index.php");
     exit;
 }
-?>

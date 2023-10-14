@@ -1,9 +1,12 @@
 <?php
+session_start();
+if (empty($_SESSION['nombre'])) {
+    header("location: login.php");
+    exit;
+}
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
-session_start();
-if (empty($_SESSION['nombre'])) header("location: login.php");
 
 if (isset($_POST['buscar'])) {
     if (empty($_POST['inicio']) || empty($_POST['fin'])) header("location: reporte_ventas.php");

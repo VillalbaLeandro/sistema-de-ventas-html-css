@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (empty($_SESSION['nombre'])) {
+    header("location: login.php");
+    exit;
+}
 include_once "encabezado.php";
 include_once "navbar.php";
 $id = $_GET['id'];
