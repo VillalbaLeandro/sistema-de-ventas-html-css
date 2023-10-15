@@ -23,7 +23,7 @@ $clientes = obtenerClientes();
     <div class="card shadow-sm mb-5 border-0">
         <div class="card-body">
             <div class="table-responsive"> <!-- Agregar esta clase para hacer la tabla responsive -->
-                <table class="table table-striped" id="clientesLista" style="max-width: 100%; font-size: 14px;">
+                <table class="table-striped display" id="clientesLista" style="max-width: 100%; font-size: 14px;">
                     <thead>
                         <tr>
                             <th>Id</th>

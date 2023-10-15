@@ -1,3 +1,15 @@
 td {
     white-space: nowrap;
 }
+
+.dt-buttons {
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start; 
+    align-items: center;
+}
+
+.dt-button {
+    margin-left: 5px; 
+    margin-bottom: 10px;
+}
