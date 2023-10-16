@@ -113,6 +113,20 @@ function obtenerProductosMasVendidos()
     LIMIT 10";
     return select($sentencia);
 }
+function buscarProductos($search)
+{
+    $pdo = conectarBaseDatos();
+
+    // Consulta SQL para buscar productos por código o nombre
+    $sql = "SELECT * FROM producto WHERE nombre LIKE :search OR codigo LIKE :search";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(array(':search' => '%' . $search . '%'));
+
+    // Recopila los resultados en un arreglo
+    $productos = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    return $productos;
+}
 
 
 function obtenerProductos($busqueda = null)
@@ -293,7 +307,8 @@ function verificarPassword($idUsuario, $password)
     $verifica = password_verify($password, $contrasenia);
     if ($verifica) return true;
 }
-function cambiarPassword($idUsuario, $password){
+function cambiarPassword($idUsuario, $password)
+{
     $nueva = password_hash($password, PASSWORD_DEFAULT);
     $sentencia = "UPDATE usuario SET pass = ? WHERE id = ?";
     return editar($sentencia, [$nueva, $idUsuario]);
@@ -309,22 +324,29 @@ function obtenerProductoPorCodigo($codigo)
 function agregarProductoALista($producto, $listaProductos)
 {
     if ($producto->stock < 1) return $listaProductos;
-    $producto->cantidad = 1;
 
     $existe = verificarSiEstaEnLista($producto->id, $listaProductos);
 
     if (!$existe) {
+        $producto->cantidad = 1;
         array_push($listaProductos, $producto);
     } else {
-        $existenciaAlcanzada = verificarExistencia($producto->id, $listaProductos, $producto->stock);
-
-        if ($existenciaAlcanzada) return $listaProductos;
-
-        $listaProductos = agregarCantidad($producto->id, $listaProductos);
+        $listaProductos = incrementarCantidad($producto->id, $listaProductos);
     }
 
     return $listaProductos;
 }
+function incrementarCantidad($productoId, $listaProductos)
+{
+    foreach ($listaProductos as &$producto) {
+        if ($producto->id === $productoId) {
+            $producto->cantidad++;
+            break;
+        }
+    }
+    return $listaProductos;
+}
+
 function verificarExistencia($idProducto, $listaProductos, $existencia)
 {
     foreach ($listaProductos as $producto) {
@@ -334,7 +356,6 @@ function verificarExistencia($idProducto, $listaProductos, $existencia)
     }
     return false;
 }
-
 function verificarSiEstaEnLista($idProducto, $listaProductos)
 {
     foreach ($listaProductos as $producto) {
@@ -372,10 +393,10 @@ function actualizarStockProductos($productos)
 }
 
 function registrarProductosVenta($productos, $idVenta)
-{                                              
+{
     $sentencia = "INSERT INTO detalle_venta (venta_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
     foreach ($productos as $producto) {
-        $parametros = [$idVenta, $producto->id, $producto->cantidad, $producto->precio_venta ];
+        $parametros = [$idVenta, $producto->id, $producto->cantidad, $producto->precio_venta];
         insertar($sentencia, $parametros);
         descontarProductos($producto->id, $producto->cantidad);
     }
@@ -407,7 +428,8 @@ function obtenerIvas()
     $sentencia = "SELECT id, nombre FROM iva";
     return select($sentencia);
 }
-function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario) {
+function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario)
+{
     $parametros = [];
     $sentencia = "SELECT venta.*, usuario.nombre, IFNULL(cliente.nombre, 'MOSTRADOR') AS cliente
     FROM venta
@@ -439,13 +461,15 @@ function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario) {
 }
 
 
-function agregarProductosVendidos($ventas){
-    foreach($ventas as $venta){
+function agregarProductosVendidos($ventas)
+{
+    foreach ($ventas as $venta) {
         $venta->productos = obtenerProductosVendidos($venta->id);
     }
     return $ventas;
 }
-function calcularTotalVentas($ventas){
+function calcularTotalVentas($ventas)
+{
     $total = 0;
     foreach ($ventas as $venta) {
         $total += $venta->total;
@@ -453,7 +477,8 @@ function calcularTotalVentas($ventas){
     return $total;
 }
 
-function calcularProductosVendidos($ventas){
+function calcularProductosVendidos($ventas)
+{
     $total = 0;
     foreach ($ventas as $venta) {
         foreach ($venta->productos as $producto) {
@@ -463,7 +488,8 @@ function calcularProductosVendidos($ventas){
     return $total;
 }
 
-function obtenerGananciaVentas($ventas){
+function obtenerGananciaVentas($ventas)
+{
     $total = 0;
     foreach ($ventas as $venta) {
         foreach ($venta->productos as $producto) {
@@ -476,7 +502,8 @@ function obtenerGananciaVentas($ventas){
 
 
 
-function obtenerProductosVendidos($idVenta){
+function obtenerProductosVendidos($idVenta)
+{
     $sentencia = "SELECT detalle_venta.cantidad, detalle_venta.precio_unitario, producto.nombre,
     producto.precio_costo
     FROM detalle_venta
