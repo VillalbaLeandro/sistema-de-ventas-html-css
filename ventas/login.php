@@ -11,10 +11,10 @@ include_once "encabezado.php";
         <div>
             <form action="iniciar_sesion.php" method="post">
                 <div class="form-group pb-3">
-                    <input type="text" placeholder="Usuario" class="form-control" name="nombre" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <input type="text" placeholder="Usuario" class="form-control" name="nombre" id="exampleInputEmail1" aria-describedby="emailHelp" required>
                 </div>
                 <div class="form-group pb-3">
-                    <input type="password" placeholder="Contraseña" class="form-control" name="password" id="exampleInputPassword1">
+                    <input type="password" placeholder="Contraseña" class="form-control" name="password" id="exampleInputPassword1" required>
                 </div>
 
                 <div class="pb-2">

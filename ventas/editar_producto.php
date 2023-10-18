@@ -101,10 +101,18 @@ if(isset($_POST['registrar'])){
     include_once "funciones.php";
     $resultado = editarProducto($codigo, $nombre, $descripcion, $categoria_id, $precio_costo, $precio_venta, $stock, $id);
     if($resultado){
-        echo'
-        <div class="alert alert-success mt-3" role="alert">
-            Información del producto registrada con éxito.
-        </div>';
+        echo "
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Producto modificado con éxito',
+                showConfirmButton: false,
+                timer: 1500
+            }).then((result) => {
+                window.location.href = 'productos.php';
+            });
+        </script>";
     }
 }
 ?>

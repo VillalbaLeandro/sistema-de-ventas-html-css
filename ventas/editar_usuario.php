@@ -15,10 +15,54 @@ if (!$id) {
 }
 include_once "funciones.php";
 $usuario = obtenerUsuarioPorId($id);
+
+$errors = array();
+
+if (isset($_POST['registrar'])) {
+    $nombre = $_POST['nombre'];
+    $apellido = $_POST['apellido'];
+    $telefono = $_POST['tel'];
+    $direccion = $_POST['direccion'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
+
+    if (empty($nombre) || empty($apellido) || empty($telefono) || empty($direccion) || empty($email)) {
+        $errors[] = "Debes completar todos los campos.";
+    }
+
+    if ($password !== $confirmPassword) {
+        $errors[] = "Las contraseñas no coinciden.";
+    }
+
+    if (empty($errors)) {
+        $resultado = editarUsuario($nombre, $apellido, $telefono, $direccion, $email, $password, $id);
+        if ($resultado) {
+            echo "
+            <script>
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Usuario modificado con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then((result) => {
+                    window.location.href = 'usuarios.php';
+                });
+            </script>";
+        }
+    }
+}
 ?>
+
 <div class="container">
     <h3>Editar usuario</h3>
     <form method="post">
+        <?php foreach ($errors as $error) : ?>
+            <div class="alert alert-danger mt-3" role="alert">
+                <?php echo $error; ?>
+            </div>
+        <?php endforeach; ?>
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
@@ -57,41 +101,3 @@ $usuario = obtenerUsuarioPorId($id);
         </div>
     </form>
 </div>
-<?php
-if (isset($_POST['registrar'])) {
-    $nombre = $_POST['nombre'];
-    $apellido = $_POST['apellido'];
-    $telefono = $_POST['tel'];
-    $direccion = $_POST['direccion'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm_password'];
-    if (
-        empty($nombre)
-        || empty($apellido)
-        || empty($telefono)
-        || empty($direccion)
-        || empty($email)
-    ) {
-        echo '
-        <div class="alert alert-danger mt-3" role="alert">
-            Debes completar todos los datos.
-        </div>';
-        return;
-    }
-    if ($password !== $confirmPassword) {
-        echo '
-        <div class="alert alert-danger mt-3" role="alert">
-            Las contraseñas no coinciden. Por favor, inténtalo de nuevo.
-        </div>';
-        return;
-    }
-    $resultado = editarUsuario($nombre, $apellido, $telefono, $direccion, $email, $password, $id);
-    if ($resultado) {
-        echo '
-        <div class="alert alert-success mt-3" role="alert">
-            Información de usuario actualizada con éxito.
-        </div>';
-    }
-}
-?>

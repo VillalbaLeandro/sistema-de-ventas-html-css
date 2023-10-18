@@ -14,15 +14,15 @@ include_once "funciones.php";
     <form method="post">
         <div class="mb-3">
             <label for="codigo" class="form-label">Código de barras</label>
-            <input type="number" name="codigo" class="form-control" id="codigo" placeholder="Escribe el código de barras del producto">
+            <input type="number" name="codigo" class="form-control" id="codigo" placeholder="Escribe el código de barras del producto" required>
         </div>
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ej. Brahma">
+            <label for="nombre" class="form-label" >Nombre</label>
+            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ej. Brahma" required>
         </div>
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <input type="text" name="descripcion" class="form-control" id="descripcion" placeholder="Ej. Brahma lata 710cc">
+            <input type="text" name="descripcion" class="form-control" id="descripcion" placeholder="Ej. Brahma lata 710cc" required>
         </div>
         <div class="mb-3">
             <label for="categoria_id" class="form-label">Categoría</label>
@@ -47,15 +47,15 @@ include_once "funciones.php";
         <div class="row">
             <div class="col">
                 <label for="compra" class="form-label">Precio costo</label>
-                <input type="number" name="precio_costo" step="any" id="precio_costo" class="form-control" placeholder="Precio de costo" aria-label="">
+                <input type="number" name="precio_costo" step="any" id="precio_costo" class="form-control" placeholder="Precio de costo" aria-label="" required>
             </div>
             <div class="col">
                 <label for="venta" class="form-label">Precio venta</label>
-                <input type="number" name="precio_venta" step="any" id="precio_venta" class="form-control" placeholder="Precio para la venta" aria-label="">
+                <input type="number" name="precio_venta" step="any" id="precio_venta" class="form-control" placeholder="Precio para la venta" aria-label="" required>
             </div>
             <div class="col">
                 <label for="stock" class="form-label">Stock</label>
-                <input type="number" name="stock" step="any" id="stock" class="form-control" placeholder="stock" aria-label="">
+                <input type="number" name="stock" step="any" id="stock" class="form-control" placeholder="stock" aria-label="" required>
             </div>
         </div>
         <div class="text-center mt-3">
