@@ -12,6 +12,13 @@ $_SESSION['lista'] = (isset($_SESSION['lista'])) ?  $_SESSION['lista'] : [];
 $total = calcularTotalLista($_SESSION['lista']);
 $clientes = obtenerClientes();
 $clienteSeleccionado = (isset($_SESSION['clienteVenta'])) ? obtenerClientePorId($_SESSION['clienteVenta']) : null;
+
+$fechaInicio = (isset($_POST['inicio'])) ? $_POST['inicio'] : null;
+$fechaFin = (isset($_POST['fin'])) ? $_POST['fin'] : null;
+$usuario = (isset($_POST['idUsuario'])) ? $_POST['idUsuario'] : null;
+$cliente = (isset($_POST['idCliente'])) ? $_POST['idCliente'] : null;
+
+$ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
 ?>
 <div class="container mt-3">
     <form action="agregar_producto_venta.php" method="post" class="row" role="search">
@@ -69,7 +76,7 @@ $clienteSeleccionado = (isset($_SESSION['clienteVenta'])) ? obtenerClientePorId(
             </div>
         <?php } ?>
         <div class="row">
-           
+
             <form class="row" method="post" action="establecer_cliente_venta.php">
                 <div class="col-10">
                     <select class="form-select" aria-label="Default select example" name="idCliente">
@@ -120,7 +127,7 @@ $clienteSeleccionado = (isset($_SESSION['clienteVenta'])) ? obtenerClientePorId(
 
             <div class="text-center mt-3">
                 <h1>Total: $<?php echo $total; ?></h1>
-                <a class="btn btn-primary btn-lg" href="registrar_venta.php">
+                <a class="btn btn-primary btn-lg" href="javascript:void(0);" onclick="confirmarFactura()">
                     <i class="fa fa-check"></i>
                     Terminar venta
                 </a>
@@ -132,7 +139,30 @@ $clienteSeleccionado = (isset($_SESSION['clienteVenta'])) ? obtenerClientePorId(
         </div>
     </div>
 </div>
-
+<script>
+    function confirmarFactura() {
+        Swal.fire({
+            title: '¿Desea imprimir la factura?',
+            text: 'Si lo desea, podrá imprimirla más tarde desde "Reporte Ventas"',
+            icon: 'info',
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Imprimir factura',
+            cancelButtonText: 'No, gracias',
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#0b5ed7',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Usuario elige imprimir factura, redirige a registrar_venta.php con imprimir_factura=1
+                window.location.href = "registrar_venta_y_facturar.php";
+            } else {
+                // Usuario elige no imprimir factura, redirige a donde desees
+                window.location.href = "registrar_venta.php"; // Cambia "otra_pagina.php" por la URL deseada
+            }
+        });
+    }
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var codigoInput = document.getElementById("codigo");

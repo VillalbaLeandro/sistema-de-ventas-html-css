@@ -133,9 +133,13 @@ $usuarios = obtenerUsuarios();
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                             <div class="text-center">
-                                                <button title="Generar PDF" class="btn btn-outline-warning" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="generatePDF(<?= $venta->id; ?>)">
+                                                <button title="Ver Factura" class="btn btn-outline-warning" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="redirectToInvoice(<?= $venta->id; ?>)">
                                                     <i class="far fa-file-pdf"></i>
                                                 </button>
+
+                                                <!-- <button title="Generar PDF" class="btn btn-outline-warning" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="generatePDF(<?= $venta->id; ?>)">
+                                                    <i class="far fa-file-pdf"></i>
+                                                </button> -->
                                             </div>
                                         </div>
                                     </td>
@@ -217,6 +221,11 @@ $usuarios = obtenerUsuarios();
 
         <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
+        <script>
+            function redirectToInvoice(idVenta) {
+                window.location.href = './facturacion/index.php?idVenta=' + idVenta;
+            }
+        </script>
 
         <script>
             // const spanishTranslations = {
@@ -246,7 +255,7 @@ $usuarios = obtenerUsuarios();
 
             let dataTableOptions = {
                 dom: 'Bfrtilp',
-                lengthMenu: [3, 10, 15, 50],
+                lengthMenu: [10, 15, 50],
                 buttons: [{
                         extend: 'pdfHtml5',
                         text: '<i class="far fa-file-pdf"></i>',

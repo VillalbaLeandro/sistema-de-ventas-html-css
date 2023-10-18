@@ -62,9 +62,10 @@ $cartas = [
                                             <a title="Editar" class="btn btn-outline-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a title="Eliminar" class="btn btn-outline-danger ms-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="eliminar_producto.php?id=<?= $producto->id; ?>">
+                                            <a title="Eliminar" class="btn btn-outline-danger ms-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="javascript:void(0);" onclick="mostrarConfirmacion(<?= $producto->id; ?>)">
                                                 <i class="fa fa-trash"></i>
                                             </a>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -99,10 +100,28 @@ include_once "footer.php"
 
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
-  
+function mostrarConfirmacion(idProducto) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'No podrás revertir esta acción.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: 'red',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'eliminar_producto.php?id=' + idProducto;
+        }
+    });
+}
+</script>
 
+<script>
     // document.getElementById('generarPDF-productsList').addEventListener('click', function() {
     //     const {
     //         jsPDF
@@ -126,7 +145,7 @@ include_once "footer.php"
 
     let dataTableOptions = {
         dom: 'Bfrtilp',
-        lengthMenu: [3, 10, 15, 50],
+        lengthMenu: [ 10, 15, 50],
         buttons: [{
                 extend: 'pdfHtml5',
                 text: '<i class="far fa-file-pdf"></i>',
@@ -134,10 +153,10 @@ include_once "footer.php"
                 className: "btn btn-outline-danger",
                 title: 'Lista de Productos',
                 exportOptions: {
-                    columns: [0,1,2,3,4,5]
+                    columns: [0, 1, 2, 3, 4, 5]
                 },
-                
-                
+
+
             },
             {
                 extend: 'copyHtml5',
@@ -146,9 +165,9 @@ include_once "footer.php"
                 className: "btn btn-outline-dark",
                 title: 'Lista de Productos',
                 exportOptions: {
-                    columns: [0,1,2,3,4,5]
+                    columns: [0, 1, 2, 3, 4, 5]
                 },
-                
+
             },
             {
                 extend: 'excelHtml5',
@@ -157,9 +176,9 @@ include_once "footer.php"
                 className: "btn btn-outline-success",
                 title: 'Lista de Productos',
                 exportOptions: {
-                    columns: [0,1,2,3,4,5]
+                    columns: [0, 1, 2, 3, 4, 5]
                 },
-                
+
             },
             {
                 extend: 'print',
@@ -168,15 +187,15 @@ include_once "footer.php"
                 className: "btn btn-outline-info",
                 title: 'Lista de Productos',
                 exportOptions: {
-                    columns: [0,1,2,3,4,5]
+                    columns: [0, 1, 2, 3, 4, 5]
                 },
-                
+
             }
         ],
         columnDefs: [{
                 //deshabilitar el ordenamiento para una columnna
                 orderable: false,
-                target: [6 , 0]
+                target: [6, 0]
             },
             {
                 //deshabilitar que el buscador para las columnas en target
@@ -445,11 +464,10 @@ include_once "footer.php"
 
     // reubica el menu de cantidad de registros
     $(document).ready(function() {
-    var lengthSelect = $('#productsList_length');
-    var dtButtons = $('.dt-buttons');
+        var lengthSelect = $('#productsList_length');
+        var dtButtons = $('.dt-buttons');
 
-    lengthSelect.detach(); // Elimina el elemento del DOM original
-    lengthSelect.insertAfter(dtButtons); // Agrega el elemento al comienzo del div.dt-buttons
-});
-
+        lengthSelect.detach(); // Elimina el elemento del DOM original
+        lengthSelect.insertAfter(dtButtons); // Agrega el elemento al comienzo del div.dt-buttons
+    });
 </script>

@@ -35,5 +35,7 @@ if (!$resultado) {
 $_SESSION['lista'] = [];
 $_SESSION['clienteVenta'] = "";
 
-header("Location: vender.php");
+header("Location: ./facturacion/index.php?idVenta=$idVenta");
 
+
+?>

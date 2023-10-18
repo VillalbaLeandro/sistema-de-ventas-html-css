@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Factura A</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+        .invoice {
+        width: 21cm;
+        margin: 1cm auto;
+        padding: 20px;
+        border: 1px solid #000;
+      }
+      .header {
+        text-align: center;
+      }
+      .details {
+        margin-top: 20px;
+      }
+      .info {
+        margin-top: 10px;
+      }
+      p {
+        font-size: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <center>
+      <table border="" cellspacing="1" cellpadding="4" width="652">
+        <tbody>
+          <tr>
+            <td width="42%" valign="TOP" height="36">
+              <p>
+              (1) NOMBRE DE FANTASÍA
+              </p>
+              <p>
+                  (2) APELLIDO Y NOMBRE ó RAZÓN SOCIAL
+              </p>
+              <hr />
+              <p>Domicilio Comercial:</p>
+              <p>Domicilio Fiscal:</p>
+              <hr />
+              <p>IVA RESPONSABLE INSCRIPTO</p>
+            </td>
+            <td width="11%" valign="TOP" colspan="2" height="36">
+              <p align="CENTER">
+                <b>A</b>
+              </p>
+            </td>
+            <td width="47%" valign="TOP" height="36">
+                <h2 align="CENTER">FACTURA</h2>
+                <label>Fecha</label>
+                <input type="text" name="dia" />
+                <input type="text" name="mes" />
+                <input type="text" name="año" />
+              <hr />
+              <p>C.U.I.T:</p>
+              <p>Ingresos Brutos:</p>
+              <p>Inicio Act.:</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="TOP" colspan="4" height="60">
+                <label>Señores: </label>
+                <input type="text" name="seniores" /> <br />
+                <label>Domicilio: </label>
+                <input type="text" name="domicilio" />
+                <label>Localidad: </label>
+                <input type="text" name="Localidad" />
+                <div>
+                  <div>
+                    IVA
+                    <div style="border: 1px red solid">
+                      <label for="iva">Res. Inscripto</label>
+                      <input
+                        type="radio"
+                        name="iva"
+                        id="respInscripto"
+                        value="respInscripto"
+                      />
+                      <label for="iva">Consumidor Final</label>
+                      <input
+                        type="radio"
+                        name="iva"
+                        id="consFinal"
+                        value="consFinal"
+                      />
+                      <label for="iva">No Responsable</label>
+                      <input
+                        type="radio"
+                        name="iva"
+                        id="noResponsable"
+                        value="noResponsable"
+                      />
+                      <label for="iva">Exento</label>
+                      <input
+                        type="radio"
+                        name="iva"
+                        id="exento"
+                        value="exento"
+                      />
+                      <label for="iva">Res. Monotributo</label>
+                      <input
+                        type="radio"
+                        name="iva"
+                        id="respMonotributo"
+                        value="respMonotributo"
+                      />
+                    </div>
+                  </div>
+                  <label>C.U.I.T Nº: </label>
+                  <input type="text" name="CUIT" /> <br />
+                  <label>Remito Nº </label>
+                  <input type="text" name="remitoN" /> <br />
+                </div>
+            </td>
+          </tr>
+          <tr>
+            <td valign="TOP" colspan="4">
+              <table border="1">
+                <thead>
+                  <tr>
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>P. Unitario</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2</td>
+                    <td>Producto A</td>
+                    <td>$10.00</td>
+                    <td>$20.00</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Producto B</td>
+                    <td>$15.00</td>
+                    <td>$45.00</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Producto C</td>
+                    <td>$30.00</td>
+                    <td>$30.00</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3" align="right">Total:</td>
+                    <td>$95.00</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h5>Nº 0001 - 000000</h5>
+            </td>
+            <td>
+              <p>C.A.I.:</p>
+              <p>Fecha Venc.:</p>
+              <h6>Original BLANCO - DUPLICADO COLOR</h6>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+  </body>
+</html>

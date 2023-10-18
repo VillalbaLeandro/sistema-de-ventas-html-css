@@ -177,6 +177,48 @@ function obtenerCategorias()
 
     return select($sentencia, $parametros);
 }
+function obtenerCategoriaIVADeCliente($categoriaClienteId) {
+    $sentencia = "SELECT id, nombre FROM categoria_cliente WHERE id = ?";
+    $parametros = [$categoriaClienteId];
+    $categoria = select($sentencia, $parametros);
+    
+    if (!empty($categoria)) {
+        return $categoria[0];
+    } else {
+        return null; 
+    }
+}
+function obtenerNumeroFactura()
+{
+    $pdo = conectarBaseDatos();
+
+    $sql = "SELECT numero FROM contador_facturas WHERE id = 1";
+    $statement = $pdo->query($sql);
+    $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($resultado) {
+        $numeroFactura = $resultado['numero'];
+    } else {
+        $numeroFactura = 1;
+    }
+
+    return $numeroFactura;
+}
+
+function incrementarNumeroFactura()
+{
+    $pdo = conectarBaseDatos();
+
+    $numeroFactura = obtenerNumeroFactura();
+
+    $nuevoNumeroFactura = $numeroFactura + 1;
+
+    $sql = "UPDATE contador_facturas SET numero = :nuevoNumero WHERE id = 1";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['nuevoNumero' => $nuevoNumeroFactura]);
+
+    return $nuevoNumeroFactura;
+}
 function obtenerProductoPorId($id)
 {
     $sentencia = "SELECT * FROM producto WHERE id = ?";
@@ -383,6 +425,22 @@ function registrarVenta($idUsuario, $idCliente, $total, $medioPago, $iva)
     }
     return false;
 }
+
+function obtenerVentaPorId($idVenta)
+{
+    $sentencia = "SELECT venta.*, IFNULL(cliente.nombre, 'MOSTRADOR') AS cliente FROM venta
+                 LEFT JOIN cliente ON cliente.id = venta.cliente_id
+                 WHERE venta.id = ?";
+    $parametros = [$idVenta];
+    $ventas = select($sentencia, $parametros);
+
+    if (!empty($ventas)) {
+        return $ventas[0];
+    } else {
+        return null; // Devolver nulo si no se encuentra la venta
+    }
+}
+
 function actualizarStockProductos($productos)
 {
     foreach ($productos as $producto) {
