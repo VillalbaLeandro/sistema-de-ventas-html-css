@@ -35,6 +35,9 @@ $idUsuario = $_SESSION['idUsuario'];
         	</a>
         </div>
 	</form>
+    <?php
+	include_once "footer.php"
+	?>
 </div>
 <?php
 if(isset($_POST['cambiar'])){

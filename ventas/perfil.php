@@ -32,4 +32,7 @@ $cartas = [
 			Cambiar contraseña
 		</a>
 	</div>
+	<?php
+	include_once "footer.php"
+	?>
 </div>

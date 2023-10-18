@@ -495,19 +495,16 @@ function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario)
     LEFT JOIN cliente ON cliente.id = venta.cliente_id
     WHERE 1 = 1"; // Inicio de la consulta
 
-    // Agregar filtro por fecha si es necesario
     if (isset($fechaInicio) && isset($fechaFin)) {
         $sentencia .= " AND DATE(venta.fecha) BETWEEN ? AND ?";
         array_push($parametros, $fechaInicio, $fechaFin);
     }
 
-    // Agregar filtro por cliente si es necesario
     if (isset($cliente)) {
         $sentencia .= " AND venta.cliente_id = ?";
         array_push($parametros, $cliente);
     }
 
-    // Agregar filtro por usuario si es necesario
     if (isset($usuario)) {
         $sentencia .= " AND venta.usuario_id = ?";
         array_push($parametros, $usuario);
@@ -517,6 +514,7 @@ function obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario)
 
     return agregarProductosVendidos($ventas);
 }
+
 
 
 function agregarProductosVendidos($ventas)

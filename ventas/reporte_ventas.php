@@ -28,10 +28,10 @@ $cliente = (isset($_POST['idCliente'])) ? $_POST['idCliente'] : null;
 $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
 
 $cartas = [
-    ["titulo" => "No. ventas", "icono" => "fa fa-shopping-cart", "total" => count($ventas), "color" => "#A71D45"],
-    ["titulo" => "Total ventas", "icono" => "fa fa-money-bill", "total" => "$" . calcularTotalVentas($ventas), "color" => "#2A8D22"],
-    ["titulo" => "Productos vendidos", "icono" => "fa fa-box", "total" => calcularProductosVendidos($ventas), "color" => "#223D8D"],
-    ["titulo" => "Ganancia", "icono" => "fa fa-wallet", "total" => "$" . obtenerGananciaVentas($ventas), "color" => "#D55929"],
+    ["titulo" => "No. ventas", "icono" => "fa fa-shopping-cart", "total" => count($ventas), "color" => "#ce4f74"],
+    ["titulo" => "Total ventas", "icono" => "fa fa-money-bill", "total" => "$" . calcularTotalVentas($ventas), "color" => "#4fab47"],
+    ["titulo" => "Productos vendidos", "icono" => "fa fa-box", "total" => calcularProductosVendidos($ventas), "color" => "#40579b"],
+    ["titulo" => "Ganancia", "icono" => "fa fa-wallet", "total" => "$" . obtenerGananciaVentas($ventas), "color" => "#f67644"],
 ];
 
 $clientes = obtenerClientes();
@@ -126,15 +126,15 @@ $usuarios = obtenerUsuarios();
                                     </td>
                                     <td>
                                         <div class="container d-flex">
-                                            <a title="Editar venta" class="btn btn-outline-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
+                                            <a title="Editar venta" class="btn btn-outline-secondary mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a title="Eliminar venta" class="btn btn-outline-danger mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="eliminar_producto.php?id=<?= $producto->id; ?>">
+                                            <!-- <a title="Eliminar venta" class="btn btn-outline-danger mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="eliminar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-trash"></i>
-                                            </a>
+                                            </a> -->
                                             <div class="text-center">
-                                                <button title="Ver Factura" class="btn btn-outline-warning" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="redirectToInvoice(<?= $venta->id; ?>)">
-                                                    <i class="far fa-file-pdf"></i>
+                                                <button title="Ver Factura" class="btn btn-outline-info" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="redirectToInvoice(<?= $venta->id; ?>)">
+                                                    <i class="fas fa-receipt"></i>
                                                 </button>
 
                                                 <!-- <button title="Generar PDF" class="btn btn-outline-warning" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="generatePDF(<?= $venta->id; ?>)">
@@ -252,7 +252,6 @@ $usuarios = obtenerUsuarios();
 
             let datatable;
             let dataTableIsInitialized = false;
-
             let dataTableOptions = {
                 dom: 'Bfrtilp',
                 lengthMenu: [10, 15, 50],

@@ -8,10 +8,10 @@ include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
 $cartas = [
-	["titulo" => "Total ventas", "icono" => "fa fa-money-bill", "total" => "$" . obtenerTotalVentas(), "color" => "#A71D45"],
-	["titulo" => "Ventas hoy", "icono" => "fa fa-calendar-day", "total" => "$" . obtenerTotalVentasHoy(), "color" => "#2A8D22"],
-	["titulo" => "Ventas semana", "icono" => "fa fa-calendar-week", "total" => "$" . obtenerTotalVentasSemana(), "color" => "#223D8D"],
-	["titulo" => "Ventas mes", "icono" => "fa fa-calendar-alt", "total" => "$" . obtenerTotalVentasMes(), "color" => "#D55929"],
+	["titulo" => "Total ventas", "icono" => "fa fa-money-bill", "total" => "$" . obtenerTotalVentas(), "color" => "#ce4f74 "],
+	["titulo" => "Ventas hoy", "icono" => "fa fa-calendar-day", "total" => "$" . obtenerTotalVentasHoy(), "color" => "#4fab47 "],
+	["titulo" => "Ventas semana", "icono" => "fa fa-calendar-week", "total" => "$" . obtenerTotalVentasSemana(), "color" => "#40579b "],
+	["titulo" => "Ventas mes", "icono" => "fa fa-calendar-alt", "total" => "$" . obtenerTotalVentasMes(), "color" => "#f67644 "],
 ];
 
 $totales = [
@@ -32,6 +32,8 @@ $productosMasVendidos = obtenerProductosMasVendidos();
 			Hola, <?= $_SESSION['nombre'] ?>
 		</h1>
 	</div>
+	<?php include_once "cartas_totales.php" ?>
+
 	<div class="card-deck row mb-2">
 		<?php foreach ($totales as $total) { ?>
 			<div class="col-xs-12 col-sm-6 col-md-3">
@@ -50,7 +52,6 @@ $productosMasVendidos = obtenerProductosMasVendidos();
 		<?php } ?>
 	</div>
 
-	<?php include_once "cartas_totales.php" ?>
 
 	<div class="row mt-2">
 		<div class="col">

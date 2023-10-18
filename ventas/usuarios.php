@@ -31,8 +31,7 @@ $usuarios = obtenerUsuarios();
                         <th>Dirección</th>
                         <th>Email</th>
                         <th>Rol</th>
-                        <th>Editar</th>
-                        <th>Eliminar</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,15 +49,12 @@ $usuarios = obtenerUsuarios();
                             <td>
                                 <a class="btn btn-outline-secondary " style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_usuario.php?id=<?php echo $usuario->id; ?>">
                                     <i class="fa fa-edit"></i>
-                                    Editar
                                 </a>
-                            </td>
-                            <td>
                                 <a class="btn btn-outline-danger " style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="eliminar_usuario.php?id=<?php echo $usuario->id; ?>">
                                     <i class="fa fa-trash"></i>
-                                    Eliminar
                                 </a>
                             </td>
+                            
                         </tr>
                     <?php } ?>
                 </tbody>

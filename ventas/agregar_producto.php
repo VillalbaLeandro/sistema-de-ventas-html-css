@@ -68,7 +68,10 @@ include_once "funciones.php";
         </div>
     </form>
 </div>
+
 <?php
+include_once "footer.php";
+
 if (isset($_POST['registrar'])) {
     $codigo = $_POST['codigo'];
     $nombre = $_POST['nombre'];
@@ -95,10 +98,19 @@ if (isset($_POST['registrar'])) {
     include_once "funciones.php";
     $resultado = registrarProducto($codigo, $nombre, $descripcion, $categoria, $precio_costo, $precio_venta, $stock);
     if ($resultado) {
-        echo '
-        <div class="alert alert-success mt-3" role="alert">
-            Producto registrado con éxito.
-        </div>';
+        echo "
+        <script class='alert alert-success mt-3'role='alert'>
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Producto creado con éxito',
+            showConfirmButton: false,
+            timer: 1500
+          }).then((result) => {
+            // Redirige a productos.php
+            window.location.href = 'productos.php';
+        });
+        </script>";
     }
 }
 
