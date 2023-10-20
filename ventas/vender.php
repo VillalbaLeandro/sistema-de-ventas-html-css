@@ -53,9 +53,9 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                             <td>$<?php echo $lista->precio_venta; ?></td>
                             <td>
                                 <div>
-                                    <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="decrementarCantidad(<?php echo $key; ?>)">-</button>
+                                    <!-- <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="decrementarCantidad(<?php echo $key; ?>)">-</button> -->
                                     <input class="border-0 text-center" type="text" id="cantidad<?php echo $key; ?>" value="<?php echo $lista->cantidad; ?>">
-                                    <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="incrementarCantidad(<?php echo $key; ?>)">+</button>
+                                    <!-- <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="incrementarCantidad(<?php echo $key; ?>)">+</button> -->
                                 </div>
                             </td>
                             <td>$<?php echo floatval($lista->cantidad * $lista->precio_venta); ?></td>

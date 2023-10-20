@@ -18,15 +18,19 @@ if (isset($_POST['nombre']) && isset($_POST['password'])) {
     $usuario = $_POST['nombre'];
     $password = $_POST['password'];
 
-
     $datosSesion = iniciarSesion($usuario, $password);
 
     if (!$datosSesion) {
         echo '
-        <div class="alert alert-danger mt-3" role="alert">
-            Nombre de usuario y/o contraseña incorrectas.
-            <a href="login.php">Regresar</a>
-        </div>';
+        <script>
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Nombre de usuario y/o contraseña incorrectas"
+        }).then(() => {
+            window.location.href = "login.php";
+        });
+        </script>';
         return;
     }
 

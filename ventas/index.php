@@ -85,7 +85,7 @@ $productosMasVendidos = obtenerProductosMasVendidos();
 			</div>
 		</div>
 		<div class="col">
-			<h4>Ventas por clientes</h4>
+			<h4>Compras por clientes</h4>
 			<div class="card  shadow-sm mb-5 border-0 ">
 				<div class="card-body">
 					<table class="table table-striped" id="ventaPorClientes" style="width:100%">
