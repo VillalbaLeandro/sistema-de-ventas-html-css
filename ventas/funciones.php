@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 define("PASSWORD_PREDETERMINADA", "admin");
 define("HOY", date("Y-m-d"));
 function select($sentencia, $parametros = [])
@@ -160,10 +161,10 @@ function insertar($sentencia, $parametros)
     $respuesta = $bd->prepare($sentencia);
     return $respuesta->execute($parametros);
 }
-function registrarProducto($codigo, $nombre, $descripcion, $categoria, $precio_costo, $precio_venta, $stock)
+function registrarProducto($codigo, $nombre, $descripcion, $categoria)
 {
-    $sentencia = "INSERT INTO producto(codigo, nombre, descripcion, categoria_id, precio_costo, precio_venta, stock) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $parametros = [$codigo, $nombre, $descripcion, $categoria, $precio_costo, $precio_venta, $stock];
+    $sentencia = "INSERT INTO producto(codigo, nombre, descripcion, categoria_id, precio_costo, precio_venta, stock) VALUES (?, ?, ?, ?, 0, 0, 0)";
+    $parametros = [$codigo, $nombre, $descripcion, $categoria];
     return insertar($sentencia, $parametros);
 }
 
@@ -268,13 +269,11 @@ function obtenerUsuarioPorId($id)
 }
 function editarUsuario($nombre, $apellido, $telefono, $direccion, $email, $password, $id)
 {
-    // Verifica si se proporcionó una nueva contraseña
     if (!empty($password)) {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $sentencia = "UPDATE usuario SET nombre = ?, apellido = ?, tel = ?, direccion = ?, email = ?, `pass` = ? WHERE id = ?";
         $parametros = [$nombre, $apellido, $telefono, $direccion, $email, $passwordHash, $id];
     } else {
-        // Si no se proporciona una nueva contraseña, actualiza sin modificar la contraseña
         $sentencia = "UPDATE usuario SET nombre = ?, apellido = ?, tel = ?, direccion = ?, email = ? WHERE id = ?";
         $parametros = [$nombre, $apellido, $telefono, $direccion, $email, $id];
     }
@@ -555,7 +554,12 @@ function obtenerGananciaVentas($ventas)
     return $total;
 }
 
-
+function actualizarProducto($id, $stock, $precio_costo, $precio_venta)
+{
+    $sentencia = "UPDATE producto SET stock = ?, precio_costo = ?, precio_venta = ? WHERE id = ?";
+    $parametros = [$stock, $precio_costo, $precio_venta, $id];
+    return editar($sentencia, $parametros);
+}
 
 
 function obtenerProductosVendidos($idVenta)
@@ -567,11 +571,161 @@ function obtenerProductosVendidos($idVenta)
     WHERE venta_id  = ? ";
     return select($sentencia, [$idVenta]);
 }
+function registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $conexion->beginTransaction();
+
+        // Registro de compra
+        $stmt = $conexion->prepare("INSERT INTO compra (fecha, proveedor_id) VALUES (NOW(), :proveedor_id)");
+        $stmt->execute(array(':proveedor_id' => 1)); // Reemplaza el valor 1 con el ID del proveedor apropiado.
+
+        $compra_id = $conexion->lastInsertId();
+
+        // Registro de detalles de compra
+        $stmt = $conexion->prepare("INSERT INTO detalle_compra (compra_id, producto_id, cantidad, precio_unitario) VALUES (:compra_id, :producto_id, :cantidad, :precio_unitario)");
+        $stmt->execute(array(
+            ':compra_id' => $compra_id,
+            ':producto_id' => $idProducto,
+            ':cantidad' => $cantidad,
+            ':precio_unitario' => $precio_compra
+        ));
+
+        // Cálculo de nuevo stock y precios
+        $producto = obtenerProductoPorId($idProducto);
+        $nuevo_stock = $producto->stock + $cantidad;
+        $precio_costo = $precio_compra;
+        $precio_venta = $precio_venta;
+
+        // Actualización de stock y precios del producto
+        $stmt = $conexion->prepare("UPDATE producto SET stock = :stock, precio_costo = :precio_costo, precio_venta = :precio_venta WHERE id = :id");
+        $stmt->execute(array(
+            ':stock' => $nuevo_stock,
+            ':precio_costo' => $precio_costo,
+            ':precio_venta' => $precio_venta,
+            ':id' => $idProducto
+        ));
+
+        $conexion->commit();
+        return true;
+    } catch (PDOException $e) {
+        if ($conexion) {
+            $conexion->rollBack();
+        }
+        echo "Error al registrar la compra: " . $e->getMessage(); // Agrega esta línea para mostrar el mensaje de error.
+        return false;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerUltimoIdCompra() {
+    try {
+        $conexion = conectarBaseDatos();
+        $query = "SELECT MAX(id) AS ultimo_id FROM compra";
+        $resultado = $conexion->query($query);
+        if ($resultado) {
+            $fila = $resultado->fetch(PDO::FETCH_ASSOC);
+            return $fila['ultimo_id'];
+        } else {
+            return 0; // No se encontraron compras
+        }
+    } catch (PDOException $e) {
+        // Manejo de errores
+        echo "Error al obtener el último ID de compra: " . $e->getMessage();
+        return 0;
+    }
+}
+
+function registrarMovimientoProducto($producto_id, $tipo, $compra_id, $venta_id, $cantidad, $fecha) {
+    try {
+        $conexion = conectarBaseDatos();
+        $query = "INSERT INTO movimiento_producto (producto_id, tipo, compra_id, venta_id, cantidad, fecha) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conexion->prepare($query);
+        $stmt->execute([$producto_id, $tipo, $compra_id, $venta_id, $cantidad, $fecha]);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error al registrar el movimiento del producto: " . $e->getMessage();
+        return false;
+    }
+}
 
 
+function obtenerSaldoCaja() {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->query("SELECT SUM(monto) as saldo FROM efectivocaja");
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $saldo = $resultado['saldo'];
+        return $saldo;
+    } catch (PDOException $e) {
+        return 0; 
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerHistorialCaja() {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->query("SELECT fecha, descripcion, monto FROM efectivocaja ORDER BY fecha DESC");
+        $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $historial;
+    } catch (PDOException $e) {
+        
+        return array(); 
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+function obtenerMovimientosPorProducto($productoId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT mp.fecha, mp.tipo, mp.cantidad, dc.precio_unitario AS precio_compra, dv.precio_unitario AS precio_venta
+                                    FROM movimiento_producto mp
+                                    LEFT JOIN detalle_compra dc ON mp.compra_id = dc.compra_id AND mp.producto_id = dc.producto_id
+                                    LEFT JOIN detalle_venta dv ON mp.venta_id = dv.venta_id AND mp.producto_id = dv.producto_id
+                                    WHERE mp.producto_id = :producto_id");
+        $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $movimientos = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $movimientos;
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+        return array();
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
 
 
-
+function obtenerStockProducto($productoId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT stock FROM producto WHERE id = :producto_id");
+        $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['stock'];
+    } catch (PDOException $e) {
+        return 0; 
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
 
 function conectarBaseDatos()
 {

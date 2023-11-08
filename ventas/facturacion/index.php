@@ -1,38 +1,31 @@
 <?php
 
 include_once "../funciones.php";
-// Obtener el idVenta desde la URL
 $idVenta = isset($_GET['idVenta']) ? $_GET['idVenta'] : null;
 
-// Verificar que el idVenta no esté vacío
 if (empty($idVenta)) {
-  // Manejar el caso en que el idVenta no esté presente
   echo "No se ha proporcionado un ID de venta válido.";
   exit;
 }
 
-// Consultar la base de datos para obtener los datos de la venta y el cliente
 $venta = obtenerVentaPorId($idVenta);
 $cliente = obtenerClientePorId($venta->cliente_id);
 $categorias = obtenerCategoriasCliente();
 $categoriaIVA = obtenerCategoriaIVADeCliente($cliente->categoria_cliente_id);
 
-$numeroFacturaActual = obtenerNumeroFactura();
+// $numeroFacturaActual = obtenerNumeroFactura();
 
-$nuevoNumeroFactura = incrementarNumeroFactura();
+// $nuevoNumeroFactura = incrementarNumeroFactura();
 
 
-// Verificar que se haya encontrado la venta y el cliente
 if (!$venta || !$cliente) {
-  // Manejar el caso en que no se encuentre la venta o el cliente
   echo "No se ha encontrado la venta o el cliente correspondiente.";
   exit;
 }
 
-// Consultar los productos vendidos en esta venta
 $productosVendidos = obtenerProductosVendidos($idVenta);
-
-// Ahora puedes usar $venta, $cliente y $productosVendidos para llenar la factura
+// echo "Productos vendidos";
+// return $productosVendidos;
 ?>
 
 
@@ -56,10 +49,10 @@ $productosVendidos = obtenerProductosVendidos($idVenta);
       <img src="logo.png">
     </div>
     <h1>FACTURA</h1>
-    <center>
+    <!-- <center>
       <!-- <h2><b>A</b></h2> -->
       <!-- <h4> Nº 00001 - <?php echo sprintf('%06d', $numeroFacturaActual); ?></h4> -->
-    </center>
+    </center> -->
     <div id="company" class="clearfix">
       <div>DrinkStore</div>
       <div>Av. Blas Parera,<br /> 6155, Posadas, Misiones.</div>

@@ -57,7 +57,9 @@ $cartas = [
                                     <td><?= '$' . floatval($producto->precio_venta - $producto->precio_costo); ?></td>
                                     <td><?= $producto->stock; ?></td>
                                     <td class="d-flex">
-
+                                        <a title="Ver Movimientos" class="btn btn-outline-info ms-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="ver_movimientos.php?id=<?= $producto->id; ?>">
+                                            <i class="fa fa-list"></i>
+                                        </a>
                                         <div class="container d-flex">
                                             <a title="Editar" class="btn btn-outline-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-edit"></i>
@@ -103,22 +105,22 @@ include_once "footer.php"
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
-function mostrarConfirmacion(idProducto) {
-    Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'No podrás revertir esta acción.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: 'red',
-        reverseButtons: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = 'eliminar_producto.php?id=' + idProducto;
-        }
-    });
-}
+    function mostrarConfirmacion(idProducto) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'No podrás revertir esta acción.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: 'red',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'eliminar_producto.php?id=' + idProducto;
+            }
+        });
+    }
 </script>
 
 <script>
@@ -145,7 +147,7 @@ function mostrarConfirmacion(idProducto) {
 
     let dataTableOptions = {
         dom: 'Bfrtilp',
-        lengthMenu: [ 10, 15, 50],
+        lengthMenu: [10, 15, 50],
         buttons: [{
                 extend: 'pdfHtml5',
                 text: '<i class="far fa-file-pdf"></i>',
