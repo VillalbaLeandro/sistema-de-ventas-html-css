@@ -32,6 +32,9 @@ if (!$resultado) {
     return;
 }
 
+foreach ($productos as $producto) {
+    registrarMovimientoProducto($producto->id, 'Venta', null, $idVenta, $producto->cantidad, date('Y-m-d H:i:s'));
+}
 $_SESSION['lista'] = [];
 $_SESSION['clienteVenta'] = "";
 
