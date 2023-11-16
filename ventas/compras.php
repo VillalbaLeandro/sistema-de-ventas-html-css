@@ -21,6 +21,21 @@ include_once "funciones.php";
                     <div id="error" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
+                    <label for="proveedor" class="form-label">Proveedor</label>
+                    <select class="form-select" name="proveedor" id="proveedor" required>
+                        <?php
+                        $proveedores = obtenerProveedores();
+                        foreach ($proveedores as $proveedor) {
+                            echo "<option value='{$proveedor->id}'>{$proveedor->nombre}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="fecha" class="form-label">Fecha de Compra (opcional)</label>
+                    <input type="date" name="fecha" class="form-control" id="fecha" placeholder="Fecha de compra">
+                </div>
+                <div class="mb-3">
                     <label for="cantidad" class="form-label">Cantidad Comprada (Stock)</label>
                     <input type="number" name="cantidad" class="form-control" id="cantidad" placeholder="Cantidad comprada (Stock)" required>
                 </div>
@@ -116,8 +131,9 @@ if (isset($_POST['registrar_compra'])) {
     $cantidad = $_POST['cantidad'];
     $precio_compra = $_POST['precio_compra'];
     $precio_venta = $_POST['precio_venta'];
+    $proveedor_id = $_POST['proveedor'];
 
-    if (empty($codigo) || empty($cantidad) || empty($precio_compra) || empty($precio_venta)) {
+    if (empty($codigo) || empty($cantidad) || empty($precio_compra) || empty($precio_venta) || empty($proveedor_id)) {
         echo '
         <div class="alert alert-danger mt-3" role="alert">
             Debes completar todos los datos.
@@ -132,15 +148,20 @@ if (isset($_POST['registrar_compra'])) {
         } else {
             $idProducto = $producto->id;
             $compra_id = obtenerUltimoIdCompra();
-            $venta_id = null; 
+            $venta_id = null;
             $cantidad = $cantidad;
-            $fecha = date('Y-m-d H:i:s');
+            $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : date('Y-m-d H:i:s'); // Si se proporciona una fecha, úsala; de lo contrario, usa la fecha actual.
 
-            if (registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto)) {
-               
+            // Modificación para obtener el total de la compra
+            $totalCompra = $cantidad * $precio_compra;
+
+            if (registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto, $proveedor_id, $totalCompra)) {
+
                 $tipoMovimiento = 'Compra';
-                $compraId = obtenerUltimoIdCompra(); 
-                registrarMovimientoProducto($idProducto, 'Compra', $compra_id, $venta_id, $cantidad, $fecha);
+                $compraId = obtenerUltimoIdCompra();
+                registrarMovimientoProducto($idProducto, 'Compra', $compraId, null, $cantidad, $fecha);
+                registrarEfectivoCaja($fecha, $totalCompra, 'Compra', null, null, 2, $compraId); // Ajusta el valor del tipo según tu esquema
+
                 echo '
                 <script>
                     Swal.fire({

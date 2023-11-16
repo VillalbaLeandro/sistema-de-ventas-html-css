@@ -57,13 +57,32 @@ function obtenerTotalVentasMes($idUsuario = null)
     if ($fila) return  number_format($fila[0]->total, 2);
 }
 
-
+// PROCEDIMIENTO ALMACENADO 
 function obtenerNumeroProductos()
 {
-    $sentencia = "SELECT IFNULL(SUM(stock),0) AS total FROM producto";
-    $fila = select($sentencia);
-    if ($fila) return $fila[0]->total;
+    try {
+        $conexion = conectarBaseDatos();
+
+        $stmt = $conexion->prepare("CALL ObtenerNumeroProductos(@totalProductos)");
+        $stmt->execute();
+
+        $stmt = $conexion->query("SELECT @totalProductos AS totalProductos");
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $totalProductos = $resultado['totalProductos'];
+
+        return $totalProductos;
+
+    } catch (PDOException $e) {
+        echo "Error al obtener el número de productos: " . $e->getMessage();
+        return 0; 
+
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
 }
+
 function obtenerNumeroVentas()
 {
     $sentencia = "SELECT IFNULL(COUNT(*),0) AS total FROM venta";
@@ -311,6 +330,38 @@ function obtenerClientePorId($id)
     $cliente = select($sentencia, [$id]);
     if ($cliente) return $cliente[0];
 }
+
+
+// Funciones para compras
+function obtenerCompraPorId($idCompra)
+{
+    $sentencia = "SELECT compra.*, proveedor.nombre AS proveedor FROM compra
+                 LEFT JOIN proveedor ON proveedor.id = compra.proveedor_id
+                 WHERE compra.id = ?";
+    $parametros = [$idCompra];
+    $compras = select($sentencia, $parametros);
+
+    if (!empty($compras)) {
+        return $compras[0];
+    } else {
+        return null; // Devolver nulo si no se encuentra la compra
+    }
+}
+
+function obtenerProveedorPorId($id)
+{
+    $sentencia = "SELECT * FROM proveedor WHERE id = ?";
+    $proveedor = select($sentencia, [$id]);
+    if ($proveedor) return $proveedor[0];
+}
+
+function obtenerCategoriasProveedor()
+{
+    $sentencia = "SELECT id, nombre FROM categoria ORDER BY nombre";
+    $parametros = [];
+    return select($sentencia, $parametros);
+}
+
 
 function editarCliente($id, $nombre, $apellido, $direccion, $fecha_nacimiento, $email, $telefono, $cuil_cuit, $dni, $categoria, $password)
 {
@@ -571,26 +622,37 @@ function obtenerProductosVendidos($idVenta)
     WHERE venta_id  = ? ";
     return select($sentencia, [$idVenta]);
 }
-function registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto)
+function obtenerProductosComprados($idCompra)
+{
+    $sentencia = "SELECT detalle_compra.cantidad, detalle_compra.precio_unitario, producto.nombre,
+    producto.precio_costo
+    FROM detalle_compra
+    INNER JOIN producto ON producto.id = detalle_compra.producto_id
+    WHERE compra_id  = ?";
+    return select($sentencia, [$idCompra]);
+}
+
+function registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto, $proveedor_id, $totalCompra)
 {
     try {
         $conexion = conectarBaseDatos();
         $conexion->beginTransaction();
 
         // Registro de compra
-        $stmt = $conexion->prepare("INSERT INTO compra (fecha, proveedor_id) VALUES (NOW(), :proveedor_id)");
-        $stmt->execute(array(':proveedor_id' => 1)); // Reemplaza el valor 1 con el ID del proveedor apropiado.
-
+        $stmt = $conexion->prepare("INSERT INTO compra (fecha, proveedor_id, total) VALUES (NOW(), :proveedor_id, :totalCompra)");
+        $stmt->bindParam(':proveedor_id', $proveedor_id, PDO::PARAM_INT);
+        $stmt->bindParam(':totalCompra', $totalCompra, PDO::PARAM_INT);
+        $stmt->execute();
+        
         $compra_id = $conexion->lastInsertId();
-
+        
         // Registro de detalles de compra
         $stmt = $conexion->prepare("INSERT INTO detalle_compra (compra_id, producto_id, cantidad, precio_unitario) VALUES (:compra_id, :producto_id, :cantidad, :precio_unitario)");
-        $stmt->execute(array(
-            ':compra_id' => $compra_id,
-            ':producto_id' => $idProducto,
-            ':cantidad' => $cantidad,
-            ':precio_unitario' => $precio_compra
-        ));
+        $stmt->bindParam(':compra_id', $compra_id, PDO::PARAM_INT);
+        $stmt->bindParam(':producto_id', $idProducto, PDO::PARAM_INT);
+        $stmt->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
+        $stmt->bindParam(':precio_unitario', $precio_compra, PDO::PARAM_STR);
+        $stmt->execute();
 
         // Cálculo de nuevo stock y precios
         $producto = obtenerProductoPorId($idProducto);
@@ -613,8 +675,67 @@ function registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idP
         if ($conexion) {
             $conexion->rollBack();
         }
-        echo "Error al registrar la compra: " . $e->getMessage(); // Agrega esta línea para mostrar el mensaje de error.
+        echo "Error al registrar la compra: " . $e->getMessage();
         return false;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function calcularTotalCompra($compra_id)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT SUM(precio_unitario * cantidad) AS total FROM detalle_compra WHERE compra_id = :compra_id");
+        $stmt->execute(array(':compra_id' => $compra_id));
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return ($resultado['total']) ? $resultado['total'] : 0;
+    } catch (PDOException $e) {
+        echo "Error al calcular el total de la compra: " . $e->getMessage();
+        return 0;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function actualizarTotalCompra($compra_id, $totalCompra)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("UPDATE compra SET total = :totalCompra WHERE id = :compra_id");
+        $stmt->execute(array(':totalCompra' => $totalCompra, ':compra_id' => $compra_id));
+    } catch (PDOException $e) {
+        echo "Error al actualizar el total de la compra: " . $e->getMessage();
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+
+function obtenerPrecioCompraPorProducto($productoId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT COALESCE(precio_unitario, 0) AS precio_compra
+                                    FROM detalle_compra
+                                    WHERE producto_id = :producto_id
+                                    ORDER BY compra_id DESC
+                                    LIMIT 1");
+        $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
+
+        return isset($resultado->precio_compra) ? $resultado->precio_compra : 0;
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+        return 0;
     } finally {
         if ($conexion) {
             $conexion = null;
@@ -640,12 +761,12 @@ function obtenerUltimoIdCompra() {
     }
 }
 
-function registrarMovimientoProducto($producto_id, $tipo, $compra_id, $venta_id, $cantidad, $fecha) {
+function registrarMovimientoProducto($producto_id, $tipo, $compraId, $venta_id, $cantidad, $fecha) {
     try {
         $conexion = conectarBaseDatos();
         $query = "INSERT INTO movimiento_producto (producto_id, tipo, compra_id, venta_id, cantidad, fecha) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conexion->prepare($query);
-        $stmt->execute([$producto_id, $tipo, $compra_id, $venta_id, $cantidad, $fecha]);
+        $stmt->execute([$producto_id, $tipo, $compraId, $venta_id, $cantidad, $fecha]);
         return true;
     } catch (PDOException $e) {
         echo "Error al registrar el movimiento del producto: " . $e->getMessage();
@@ -653,13 +774,21 @@ function registrarMovimientoProducto($producto_id, $tipo, $compra_id, $venta_id,
     }
 }
 
-
 function obtenerSaldoCaja() {
     try {
         $conexion = conectarBaseDatos();
-        $stmt = $conexion->query("SELECT SUM(monto) as saldo FROM efectivocaja");
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        $saldo = $resultado['saldo'];
+
+        // Suma de todas las entradas
+        $stmtEntradas = $conexion->query("SELECT SUM(monto) as totalEntradas FROM efectivocaja WHERE tipo = 1");
+        $totalEntradas = $stmtEntradas->fetch(PDO::FETCH_ASSOC)['totalEntradas'];
+
+        // Suma de todas las salidas
+        $stmtSalidas = $conexion->query("SELECT SUM(monto) as totalSalidas FROM efectivocaja WHERE tipo = 2");
+        $totalSalidas = $stmtSalidas->fetch(PDO::FETCH_ASSOC)['totalSalidas'];
+
+        // Saldo total (entradas - salidas)
+        $saldo = $totalEntradas - $totalSalidas;
+
         return $saldo;
     } catch (PDOException $e) {
         return 0; 
@@ -685,14 +814,130 @@ function obtenerHistorialCaja() {
         }
     }
 }
+function obtenerProveedores() {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->query("SELECT * FROM proveedor");
+        $proveedores = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $proveedores;
+    } catch (PDOException $e) {
+        echo "Error en la consulta de proveedores: " . $e->getMessage();
+        return array();
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function registrarEfectivoCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
+        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(':monto', $monto, PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+        $stmt->bindParam(':entrada_salida_id', $entradaSalidaId, PDO::PARAM_INT);
+        $stmt->bindParam(':venta_id', $ventaId, PDO::PARAM_INT);
+        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_INT);
+        $stmt->bindParam(':compra_id', $compraId, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return true;
+    } catch (PDOException $e) {
+        echo "Error al registrar efectivo en caja: " . $e->getMessage();
+        return false;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+function obtenerSaldoAnterior($fechaInicio)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT SUM(monto) as saldo_anterior FROM efectivocaja WHERE fecha < :fechaInicio");
+        $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['saldo_anterior'] ?? 0;
+    } catch (PDOException $e) {
+        return 0;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerTotalCompras($fechaInicio, $fechaFin)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT SUM(monto) as total_compras FROM efectivocaja WHERE fecha BETWEEN :fechaInicio AND :fechaFin AND tipo = 2");
+        $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total_compras'] ?? 0;
+    } catch (PDOException $e) {
+        return 0;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerTotalVentasCaja($fechaInicio, $fechaFin)
+{
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT SUM(monto) as total_ventas FROM efectivocaja WHERE fecha BETWEEN :fechaInicio AND :fechaFin AND tipo = 1");
+        $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total_ventas'] ?? 0;
+    } catch (PDOException $e) {
+        return 0;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerSaldoActual($fechaInicio, $fechaFin)
+{
+    $totalCompras = obtenerTotalCompras($fechaInicio, $fechaFin);
+    $totalVentas = obtenerTotalVentasCaja($fechaInicio, $fechaFin);
+
+    return $totalVentas - $totalCompras;
+}
+
 function obtenerMovimientosPorProducto($productoId) {
     try {
         $conexion = conectarBaseDatos();
-        $stmt = $conexion->prepare("SELECT mp.fecha, mp.tipo, mp.cantidad, dc.precio_unitario AS precio_compra, dv.precio_unitario AS precio_venta
-                                    FROM movimiento_producto mp
-                                    LEFT JOIN detalle_compra dc ON mp.compra_id = dc.compra_id AND mp.producto_id = dc.producto_id
-                                    LEFT JOIN detalle_venta dv ON mp.venta_id = dv.venta_id AND mp.producto_id = dv.producto_id
-                                    WHERE mp.producto_id = :producto_id");
+        $stmt = $conexion->prepare("
+            SELECT 
+                mp.fecha, 
+                mp.tipo, 
+                mp.cantidad, 
+                dc.precio_unitario AS precio_compra, 
+                dv.precio_unitario AS precio_venta
+            FROM movimiento_producto mp
+            LEFT JOIN detalle_compra dc 
+                ON mp.compra_id = dc.compra_id 
+                   AND mp.producto_id = dc.producto_id
+            LEFT JOIN detalle_venta dv 
+                ON mp.venta_id = dv.venta_id 
+                   AND mp.producto_id = dv.producto_id
+            WHERE mp.producto_id = :producto_id
+            ORDER BY mp.fecha DESC
+        ");
         $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -708,6 +953,214 @@ function obtenerMovimientosPorProducto($productoId) {
         }
     }
 }
+
+
+function obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin)
+{
+    try {
+        $conexion = conectarBaseDatos();
+
+        // Ajusta la consulta para incluir venta_id y compra_id
+        $sql = "SELECT fecha, descripcion, monto, venta_id, compra_id FROM efectivocaja";
+
+        if (!empty($fechaInicio) && !empty($fechaFin)) {
+            $sql .= " WHERE DATE(fecha) BETWEEN :fechaInicio AND :fechaFin";
+        } elseif (empty($fechaInicio) && !empty($fechaFin)) {
+            $sql .= " WHERE DATE(fecha) <= :fechaFin";
+        } elseif (!empty($fechaInicio) && empty($fechaFin)) {
+            $sql .= " WHERE DATE(fecha) >= :fechaInicio";
+        }
+
+        $sql .= " ORDER BY fecha DESC";
+
+        $stmt = $conexion->prepare($sql);
+
+        // Bind parameters solo si se proporcionan las fechas
+        if (!empty($fechaInicio) && !empty($fechaFin)) {
+            $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+            $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        } elseif (empty($fechaInicio) && !empty($fechaFin)) {
+            $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        } elseif (!empty($fechaInicio) && empty($fechaFin)) {
+            $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $historial;
+    } catch (PDOException $e) {
+        return array();
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+
+// function obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin)
+// {
+//     try {
+//         $conexion = conectarBaseDatos();
+
+//         // Ajusta la consulta para filtrar solo si se proporcionan las fechas
+//         $sql = "SELECT fecha, descripcion, monto FROM efectivocaja";
+
+//         if (!empty($fechaInicio) && !empty($fechaFin)) {
+//             $sql .= " WHERE DATE(fecha) BETWEEN :fechaInicio AND :fechaFin";
+//         } elseif (empty($fechaInicio) && !empty($fechaFin)) {
+//             $sql .= " WHERE DATE(fecha) <= :fechaFin";
+//         } elseif (!empty($fechaInicio) && empty($fechaFin)) {
+//             $sql .= " WHERE DATE(fecha) >= :fechaInicio";
+//         }
+
+//         $sql .= " ORDER BY fecha DESC";
+
+//         $stmt = $conexion->prepare($sql);
+
+//         // Bind parameters solo si se proporcionan las fechas
+//         if (!empty($fechaInicio) && !empty($fechaFin)) {
+//             $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+//             $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+//         } elseif (empty($fechaInicio) && !empty($fechaFin)) {
+//             $stmt->bindParam(':fechaFin', $fechaFin, PDO::PARAM_STR);
+//         } elseif (!empty($fechaInicio) && empty($fechaFin)) {
+//             $stmt->bindParam(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+//         }
+
+//         $stmt->execute();
+//         $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//         return $historial;
+//     } catch (PDOException $e) {
+//         return array();
+//     } finally {
+//         if ($conexion) {
+//             $conexion = null;
+//         }
+//     }
+// }
+
+function obtenerMovimientosPorProductos() {
+    // Obtener la lista de productos
+    $productos = obtenerProductos();
+
+    $movimientos = [];
+
+    foreach ($productos as $producto) {
+        $movimientoProducto = new stdClass();
+        $movimientoProducto->nombre = $producto->nombre;
+        $movimientoProducto->id = $producto->id;
+
+        // Obtener detalles de ventas por mes
+        $detallesVenta = obtenerDetallesVenta($producto->id);
+        foreach ($detallesVenta as $detalle) {
+            $mes = obtenerMesDesdeFecha($detalle->fecha); // Supongamos que tienes una función para obtener el mes desde la fecha
+            $movimientoProducto->ventas[$mes][] = $detalle;
+        }
+
+        // Obtener detalles de compras por mes
+        $detallesCompra = obtenerDetallesCompra($producto->id);
+        foreach ($detallesCompra as $detalle) {
+            $mes = obtenerMesDesdeFecha($detalle->fecha); // Supongamos que tienes una función para obtener el mes desde la fecha
+            $movimientoProducto->compras[$mes][] = $detalle;
+        }
+
+        $movimientos[] = $movimientoProducto;
+    }
+
+    return $movimientos;
+}
+
+function obtenerMesDesdeFecha($fecha) {
+    try {
+        $dateTime = new DateTime($fecha);
+        $mes = $dateTime->format('n'); // 'n' devuelve el número del mes sin ceros iniciales (1 hasta 12)
+        return $mes;
+    } catch (Exception $e) {
+        // Manejar el error según tus necesidades
+        echo "Error al obtener el mes desde la fecha: " . $e->getMessage();
+        return 0; // En caso de error, devolver 0 o manejar de otra manera
+    }
+}
+
+function obtenerDetallesVenta($productoId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT * FROM detalle_venta WHERE producto_id = :producto_id");
+        $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $detallesVenta = $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $detallesVenta;
+    } catch (PDOException $e) {
+        // Manejar el error según tus necesidades
+        echo "Error al obtener detalles de venta: " . $e->getMessage();
+        return [];
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+// Función para obtener detalles de compra por producto
+function obtenerDetallesCompra($productoId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("SELECT * FROM detalle_compra WHERE producto_id = :producto_id");
+        $stmt->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $detallesCompra = $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $detallesCompra;
+    } catch (PDOException $e) {
+        // Manejar el error según tus necesidades
+        echo "Error al obtener detalles de compra: " . $e->getMessage();
+        return [];
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
+function obtenerMovimientosPorMes($idProducto) {
+    // Obtener productos vendidos por mes
+    $ventas = select("SELECT DATE_FORMAT(venta.fecha, '%Y-%m') AS mes, SUM(detalle_venta.cantidad) AS cantidad
+                      FROM venta
+                      INNER JOIN detalle_venta ON venta.id = detalle_venta.venta_id
+                      WHERE detalle_venta.producto_id = ?
+                      GROUP BY mes", [$idProducto]);
+
+    // Obtener productos comprados por mes
+    $compras = select("SELECT DATE_FORMAT(compra.fecha, '%Y-%m') AS mes, SUM(detalle_compra.cantidad) AS cantidad
+                       FROM compra
+                       INNER JOIN detalle_compra ON compra.id = detalle_compra.compra_id
+                       WHERE detalle_compra.producto_id = ?
+                       GROUP BY mes", [$idProducto]);
+
+    // Unir la información de ventas y compras
+    $movimientos = array_merge($ventas, $compras);
+
+    return $movimientos;
+}
+function obtenerNombreMes($numeroMes) {
+    $meses = [
+        1 => 'Enero',
+        2 => 'Febrero',
+        3 => 'Marzo',
+        4 => 'Abril',
+        5 => 'Mayo',
+        6 => 'Junio',
+        7 => 'Julio',
+        8 => 'Agosto',
+        9 => 'Septiembre',
+        10 => 'Octubre',
+        11 => 'Noviembre',
+        12 => 'Diciembre',
+    ];
+
+    return $meses[$numeroMes] ?? 'Desconocido';
+}
+
 
 
 function obtenerStockProducto($productoId) {
@@ -726,6 +1179,32 @@ function obtenerStockProducto($productoId) {
         }
     }
 }
+
+
+function registrarTransaccionCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId) {
+    try {
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
+        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(':monto', $monto, PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+        $stmt->bindParam(':entrada_salida_id', $entradaSalidaId, PDO::PARAM_INT);
+        $stmt->bindParam(':venta_id', $ventaId, PDO::PARAM_INT);
+        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_INT);
+        $stmt->bindParam(':compra_id', $compraId, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return true;
+    } catch (PDOException $e) {
+        echo "Error al registrar efectivo en caja: " . $e->getMessage();
+        return false;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
+    }
+}
+
 
 function conectarBaseDatos()
 {

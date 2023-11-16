@@ -35,8 +35,13 @@ if (!$resultado) {
 foreach ($productos as $producto) {
     registrarMovimientoProducto($producto->id, 'Venta', null, $idVenta, $producto->cantidad, date('Y-m-d H:i:s'));
 }
+
+$fechaRegistro = date('Y-m-d H:i:s');
+registrarEfectivoCaja($fechaRegistro, $total, 'Venta', null, $idVenta, 1, null);
+
+
 $_SESSION['lista'] = [];
 $_SESSION['clienteVenta'] = "";
 
 header("Location: vender.php");
-
+?>

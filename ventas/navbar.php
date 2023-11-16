@@ -56,6 +56,12 @@
             Caja
           </a>
         </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link active" href="estadisticas.php">
+            <i class="far fa-money-bill-alt"></i>
+            Estadisticas
+          </a>
+        </li>
       </ul>
       <div class="dropdown mx-3">
         <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">

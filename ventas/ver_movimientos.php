@@ -27,20 +27,7 @@ if (isset($_GET['id'])) {
     <?php if (!empty($producto)) { ?>
         <h1>Movimientos del Producto: <?php echo $producto->nombre; ?></h1>
         <p>Stock actual: <?php echo obtenerStockProducto($idProducto); ?></p>
-        <div class="container mt-3">
-            <h3>Filtrar Movimientos</h3>
-            <form method="post d-flex">
-                <div class="form-group col-3">
-                    <label for="inicio">Fecha de inicio:</label>
-                    <input type="date" name="inicio" id="inicio" class="form-control">
-                </div>
-                <div class="form-group col-3">
-                    <label for="fin">Fecha de fin:</label>
-                    <input type="date" name="fin" id="fin" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-            </form>
-        </div>
+        
         <?php if (empty($movimientos)) { ?>
             <div class="alert alert-info" role="alert">
                 No hay movimientos registrados para este producto.
@@ -54,7 +41,7 @@ if (isset($_GET['id'])) {
                         <th>Cantidad</th>
                         <th>Precio Compra Unitario</th>
                         <th>Precio Venta Unitario</th>
-                        <th>Acciones</th>
+                        <!-- <th>Acciones</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -65,7 +52,7 @@ if (isset($_GET['id'])) {
                             <td><?= $movimiento->cantidad; ?></td>
                             <td><?= isset($movimiento->precio_compra) ? '$' . $movimiento->precio_compra : ''; ?></td>
                             <td><?= isset($movimiento->precio_venta) ? '$' . $movimiento->precio_venta : ''; ?></td>
-                            <td>
+                            <!-- <td>
                                 <?php foreach ($ventas as $venta) { ?>
                                     <?php if ($idProducto == $venta->id) { ?>
                                         <button title="Ver Factura" class="btn btn-outline-info" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="redirectToInvoice(this.dataset.idVenta)">
@@ -73,7 +60,7 @@ if (isset($_GET['id'])) {
                                         </button>
                                     <?php } ?>
                                 <?php } ?>
-                            </td>
+                            </td> -->
                         </tr>
                     <?php } ?>
                 </tbody>
