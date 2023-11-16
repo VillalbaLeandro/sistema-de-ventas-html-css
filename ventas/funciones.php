@@ -1208,10 +1208,10 @@ function registrarTransaccionCaja($fecha, $monto, $descripcion, $entradaSalidaId
 
 function conectarBaseDatos()
 {
-    $host = "localhost";
-    $db   = "drinkstore_db";
-    $user = "root";
-    $pass = "";
+    $host = "bnreo6xkjc6wpmhjiyfx-mysql.services.clever-cloud.com";
+    $db   = "bnreo6xkjc6wpmhjiyfx";
+    $user = "u7mpdnoyxnnvgmyl";
+    $pass = "LQZ5NbHbFYtfoTiZaH3e";
     $charset = 'utf8mb4';
 
     $options = [
