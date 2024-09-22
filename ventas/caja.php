@@ -165,38 +165,23 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                         <th>Fecha</th>
                         <th>Descripción</th>
                         <th>Monto</th>
-                        <th>Tipo</th>
-                        <th>Saldo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     if (!empty($historial)) {
-                        $saldoAcumulado = obtenerSaldoAnterior($fechaInicio); // Inicia el saldo acumulado con el saldo anterior
                         foreach ($historial as $transaccion) {
-                            $tipoMovimiento = isset($transaccion['tipo_movimiento']) ? $transaccion['tipo_movimiento'] : 'No especificado';
-                            $monto = (float) $transaccion['monto'];
-
-                            // Actualiza el saldo acumulado según el tipo de movimiento
-                            if ($tipoMovimiento === 'Entrada') {
-                                $saldoAcumulado += $monto;
-                            } else {
-                                $saldoAcumulado -= $monto;
-                            }
-
                             echo "<tr>";
-                            echo "<td>" . htmlspecialchars($transaccion['fecha']) . "</td>";
-                            echo "<td>" . htmlspecialchars($transaccion['descripcion']) . "</td>";
-                            echo "<td>$" . number_format($monto, 2) . "</td>";
-                            echo "<td>" . htmlspecialchars($tipoMovimiento) . "</td>";
-                            echo "<td>$" . number_format($saldoAcumulado, 2) . "</td>";
+                            echo "<td>" . $transaccion['fecha'] . "</td>";
+                            echo "<td>" .  $transaccion['descripcion'] . "</td>";
+                            echo "<td>$" . $transaccion['monto'] . "</td>";
 
-                            // Mostrar botón de acciones según el tipo de transacción
+                            // Agrega un enlace para ver la factura si hay un venta_id o compra_id
                             if (!empty($transaccion['venta_id'])) {
-                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idVenta=" . htmlspecialchars($transaccion['venta_id']) . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
+                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idVenta=" . $transaccion['venta_id'] . "' class='btn btn-outline-info'  style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
                             } elseif (!empty($transaccion['compra_id'])) {
-                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idCompra=" . htmlspecialchars($transaccion['compra_id']) . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
+                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idCompra=" . $transaccion['compra_id'] . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
                             } else {
                                 echo "<td></td>";
                             }

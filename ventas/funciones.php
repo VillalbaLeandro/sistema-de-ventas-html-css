@@ -911,19 +911,27 @@ function obtenerHistorialCaja()
 //     }
 // }
 
-function registrarEfectivoCaja($fecha, $monto, $descripcion, $entrada_salida_id, $tipo_movimiento, $tipo_transaccion, $venta_id = null, $compra_id = null)
-{
-    $conexion = conectarBaseDatos();
-
-    // Prepara la consulta para insertar en efectivocaja
-    $sql = "INSERT INTO efectivocaja (fecha, monto, descripcion, tipo_movimiento, tipo_transaccion, entrada_salida_id, venta_id, compra_id) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
+function registrarEfectivoCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId) {
     try {
-        $stmt = $conexion->prepare($sql);
-        $stmt->execute([$fecha, $monto, $descripcion, $tipo_movimiento, $tipo_transaccion, $entrada_salida_id, $venta_id, $compra_id]);
+        $conexion = conectarBaseDatos();
+        $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
+        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(':monto', $monto, PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+        $stmt->bindParam(':entrada_salida_id', $entradaSalidaId, PDO::PARAM_INT);
+        $stmt->bindParam(':venta_id', $ventaId, PDO::PARAM_INT);
+        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_INT);
+        $stmt->bindParam(':compra_id', $compraId, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return true;
     } catch (PDOException $e) {
         echo "Error al registrar efectivo en caja: " . $e->getMessage();
+        return false;
+    } finally {
+        if ($conexion) {
+            $conexion = null;
+        }
     }
 }
 /**

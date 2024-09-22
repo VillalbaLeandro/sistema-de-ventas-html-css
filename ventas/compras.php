@@ -180,7 +180,7 @@ if (isset($_POST['registrar_compra'])) {
 
             if (registrarCompra($producto->codigo, $cantidad, $precio_compra, $precio_venta, $idProducto, $proveedor_id, $totalCompra)) {
                 registrarMovimientoProducto($idProducto, 'Compra', $compra_id, null, $cantidad, $fecha);
-                registrarEfectivoCaja($fecha, $totalCompra, 'Compra', null, null, 2, $compra_id);
+                registrarEfectivoCaja($fecha, $totalCompra, 'Compra', null, $idVenta, 2, $compra_id);
 
                 echo '
                 <script>

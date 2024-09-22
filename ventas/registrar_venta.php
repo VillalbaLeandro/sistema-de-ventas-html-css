@@ -44,4 +44,3 @@ $_SESSION['lista'] = [];
 $_SESSION['clienteVenta'] = "";
 
 header("Location: vender.php");
-?>
