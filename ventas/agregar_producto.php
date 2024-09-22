@@ -8,13 +8,17 @@ if (empty($_SESSION['nombre'])) {
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
+
+// Obtener el siguiente código de producto automáticamente
+$codigoSiguiente = obtenerSiguienteCodigoProducto();
 ?>
 <div class="container">
     <h3>Agregar producto</h3>
     <form method="post">
         <div class="mb-3">
             <label for="codigo" class="form-label">Código de barras</label>
-            <input type="number" name="codigo" class="form-control" id="codigo" placeholder="Escribe el código de barras del producto" required>
+            <!-- Mostrar el código generado automáticamente y deshabilitado para evitar cambios -->
+            <input type="number" name="codigo" class="form-control" id="codigo" value="<?php echo $codigoSiguiente; ?>" readonly>
         </div>
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
@@ -54,35 +58,31 @@ include_once "funciones.php";
 include_once "footer.php";
 
 if (isset($_POST['registrar'])) {
-    $codigo = $_POST['codigo'];
+    $codigo = $codigoSiguiente; // Utilizamos el código generado automáticamente
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
     $categoria = $_POST['categoria_id'];
-    if (
-        empty($codigo)
-        || empty($nombre)
-        || empty($descripcion)
-        || empty($categoria)
-    ) {
+    
+    if (empty($nombre) || empty($descripcion) || empty($categoria)) {
         echo '
         <div class="alert alert-danger mt-3" role="alert">
             Debes completar todos los datos.
         </div>';
         return;
     }
+    
     include_once "funciones.php";
     $resultado = registrarProducto($codigo, $nombre, $descripcion, $categoria);
     if ($resultado) {
         echo "
-        <script class='alert alert-success mt-3' role='alert'>
+        <script>
         Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Producto creado con éxito',
             showConfirmButton: false,
             timer: 1500
-          }).then((result) => {
-            // Redirige a productos.php
+        }).then((result) => {
             window.location.href = 'productos.php';
         });
         </script>";

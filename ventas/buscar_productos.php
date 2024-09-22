@@ -1,5 +1,5 @@
 <?php
-require_once 'funciones.php'; // Asegúrate de incluir tu archivo de funciones.
+require_once 'funciones.php';
 
 try {
     // Conéctate a tu base de datos utilizando la función conectarBaseDatos
@@ -13,11 +13,10 @@ try {
     $statement = $pdo->prepare($sql);
     $statement->execute(array(':search_nombre' => '%' . $search . '%', ':search_codigo' => '%' . $search . '%'));
 
-
     // Recopila los resultados en un arreglo
     $productos = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    // Devuelve los resultados como JSON
+    // Mostrar los resultados en JSON
     header('Content-Type: application/json');
     echo json_encode($productos);
 } catch (PDOException $e) {

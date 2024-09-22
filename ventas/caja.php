@@ -9,39 +9,40 @@ include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recoge los datos enviados por el formulario
-    $fecha = date('Y-m-d H:i:s');
-    $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : null;
-    $entradaSalidaId = (isset($_POST['entradaSalidaId'])) ? $_POST['entradaSalidaId'] : null;
-    $ventaId = (isset($_POST['ventaId'])) ? $_POST['ventaId'] : null;
-    $compraId = (isset($_POST['compraId'])) ? $_POST['compraId'] : null;
-
-    // Determina el tipo de transacción (1 para agregar, 2 para quitar)
-    $tipo = ($entradaSalidaId == 1) ? 1 : 2;
-
-    // Verifica si al menos una fecha está presente antes de registrar la transacción
-    if (isset($_POST['fechaInicio']) || isset($_POST['fechaFin'])) {
-        // Llama a la función para registrar en la caja
-        // registrarEfectivoCaja($fecha, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId);
-    }
-}
-
 // Inicializa las fechas con el formato correcto
 $fechaInicio = date('Y-m-d');
 $fechaFin = date('Y-m-d');
 
-// Filtrar por rango de fechas si se envió el formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['fechaInicio']) && isset($_POST['fechaFin'])) {
-    $fechaInicio = $_POST['fechaInicio'];
-    $fechaFin = $_POST['fechaFin'];
+// Manejo de la solicitud POST para registrar movimientos
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fecha = date('Y-m-d H:i:s');
+    $monto = isset($_POST['monto']) ? (float)$_POST['monto'] : 0;
+    $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : 'sin detallar';
+    $tipoMovimiento = isset($_POST['tipo_movimiento']) ? $_POST['tipo_movimiento'] : 'Entrada';
+    $tipoTransaccion = isset($_POST['tipo_transaccion']) ? $_POST['tipo_transaccion'] : 'Ajuste Manual';
+
+    // Validar y registrar el saldo inicial
+    if (isset($_POST['registrar_saldo_inicial'])) {
+        registrarEfectivoCaja($fecha, $monto, $descripcion, null, $tipoMovimiento, $tipoTransaccion, null, null, $monto);
+    }
+
+    // Registrar entrada o salida manual
+    if (isset($_POST['registrar_movimiento'])) {
+        // Registrar el movimiento en la caja sin intentar guardar el saldo
+        registrarEfectivoCaja($fecha, $monto, $descripcion, null, $tipoMovimiento, $tipoTransaccion, null, null, null); 
+    }
+
+    // Actualizar el rango de fechas si se envía desde el formulario
+    if (isset($_POST['fechaInicio']) && isset($_POST['fechaFin'])) {
+        $fechaInicio = $_POST['fechaInicio'];
+        $fechaFin = $_POST['fechaFin'];
+    }
 }
 
 // Obtener el historial de transacciones
 $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
 
 ?>
-
 
 <div class="container">
     <h3>Caja</h3>
@@ -82,6 +83,52 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
         </div>
     </div>
 
+    <!-- <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="mb-4">Establecer Saldo Inicial</h4>
+            <form method="post" action="">
+                <div class="form-group mb-3">
+                    <label for="monto_inicial">Monto Inicial</label>
+                    <input type="number" class="form-control" id="monto_inicial" name="monto" placeholder="Ingrese el monto inicial" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="registrar_saldo_inicial" class="btn btn-success btn-block">Registrar Saldo Inicial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="mb-4">Registrar Movimiento Manual</h4>
+            <form method="post" action="">
+                <div class="form-group mb-3">
+                    <label for="monto">Monto</label>
+                    <input type="number" class="form-control" id="monto" name="monto" placeholder="Ingrese el monto" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="descripcion">Descripción</label>
+                    <input type="text" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción del movimiento">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="tipo_movimiento">Tipo de Movimiento</label>
+                    <select class="form-select" id="tipo_movimiento" name="tipo_movimiento" required>
+                        <option value="Entrada">Entrada</option>
+                        <option value="Salida">Salida</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="tipo_transaccion">Tipo de Transacción</label>
+                    <input type="text" class="form-control" id="tipo_transaccion" name="tipo_transaccion" placeholder="Ej. Ajuste Manual" value="Ajuste Manual">
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="registrar_movimiento" class="btn btn-primary btn-block">Registrar Movimiento</button>
+                </div>
+            </form>
+        </div>
+    </div> -->
+
+    <!-- Formulario para filtrar por fechas -->
     <div class="card mt-4">
         <div class="card-body">
             <h4 class="mb-4">Filtrar por Rango de Fechas</h4>
@@ -89,11 +136,11 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                 <div class="form-row mb-3">
                     <div class="form-group col-md-4">
                         <label for="fechaInicio">Fecha de Inicio</label>
-                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" value="<?php echo date('Y-m-d'); ?>" required>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" value="<?php echo $fechaInicio; ?>" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="fechaFin">Fecha de Fin</label>
-                        <input type="datetime-local" class="form-control" id="fechaFin" name="fechaFin" value="<?php echo date('Y-m-d') . 'T23:59'; ?>" required>
+                        <input type="datetime-local" class="form-control" id="fechaFin" name="fechaFin" value="<?php echo $fechaFin . 'T23:59'; ?>" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -101,8 +148,8 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                 </div>
             </form>
         </div>
-
     </div>
+
     <!-- Historial de transacciones -->
     <div class="card mt-4">
         <div class="card-body">
@@ -113,51 +160,53 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                         <th>Fecha</th>
                         <th>Descripción</th>
                         <th>Monto</th>
-                        <th>Acciones</th> <!-- Nueva columna para el botón Ver Factura -->
+                        <th>Tipo</th>
+                        <th>Saldo</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                if (!empty($historial)) {
-                    foreach ($historial as $transaccion) {
-                        echo "<tr>";
-                        echo "<td>" . $transaccion['fecha'] . "</td>";
-                        echo "<td>" . $transaccion['descripcion'] . "</td>";
-                        echo "<td>$" . $transaccion['monto'] . "</td>";
-                    
-                        // Agrega un enlace para ver la factura si hay un venta_id o compra_id
-                        if (!empty($transaccion['venta_id'])) {
-                            echo "<td><a title='Ver Factura' href='facturacion/index.php?idVenta=" . $transaccion['venta_id'] . "' class='btn btn-outline-info'  style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
-                        } elseif (!empty($transaccion['compra_id'])) {
-                            echo "<td><a title='Ver Factura' href='facturacion/index.php?idCompra=" . $transaccion['compra_id'] . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
-                        } else {
-                            echo "<td></td>";
+                    <?php
+                    if (!empty($historial)) {
+                        $saldoAcumulado = obtenerSaldoAnterior($fechaInicio); // Inicia el saldo acumulado con el saldo anterior
+                        foreach ($historial as $transaccion) {
+                            $tipoMovimiento = isset($transaccion['tipo_movimiento']) ? $transaccion['tipo_movimiento'] : 'No especificado';
+                            $monto = (float) $transaccion['monto'];
+
+                            // Actualiza el saldo acumulado según el tipo de movimiento
+                            if ($tipoMovimiento === 'Entrada') {
+                                $saldoAcumulado += $monto;
+                            } else {
+                                $saldoAcumulado -= $monto;
+                            }
+
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($transaccion['fecha']) . "</td>";
+                            echo "<td>" . htmlspecialchars($transaccion['descripcion']) . "</td>";
+                            echo "<td>$" . number_format($monto, 2) . "</td>";
+                            echo "<td>" . htmlspecialchars($tipoMovimiento) . "</td>";
+                            echo "<td>$" . number_format($saldoAcumulado, 2) . "</td>";
+
+                            // Mostrar botón de acciones según el tipo de transacción
+                            if (!empty($transaccion['venta_id'])) {
+                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idVenta=" . htmlspecialchars($transaccion['venta_id']) . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
+                            } elseif (!empty($transaccion['compra_id'])) {
+                                echo "<td><a title='Ver Factura' href='facturacion/index.php?idCompra=" . htmlspecialchars($transaccion['compra_id']) . "' class='btn btn-outline-info' style='--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;'><i class='fas fa-receipt'></i></a></td>";
+                            } else {
+                                echo "<td></td>";
+                            }
+                            echo "</tr>";
                         }
-                    
-                        echo "</tr>";
+                    } else {
+                        echo "<tr><td colspan='6'>No hay transacciones en el rango de fechas seleccionado.</td></tr>";
                     }
-                    
-                } else {
-                    echo "<tr><td colspan='4'>No hay transacciones en el rango de fechas seleccionado.</td></tr>";
-                }
-                ?>
-            </tbody>
+                    ?>
+                </tbody>
             </table>
         </div>
     </div>
-</div>
 
 </div>
-<script>
-    // Función para redirigir a la factura
-    function redirectToInvoice(id, tipo) {
-        if (tipo === 'venta') {
-            window.location.href = './facturacion/index.php?idVenta=' + id;
-        } else if (tipo === 'compra') {
-            window.location.href = './facturacion/index.php?idCompra=' + id;
-        }
-    }
-</script>
 
 <?php
 include_once "footer.php";

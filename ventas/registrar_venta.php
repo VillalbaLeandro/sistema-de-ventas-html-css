@@ -9,7 +9,7 @@ include_once "funciones.php";
 $productos = $_SESSION['lista'];
 $idUsuario = $_SESSION['idUsuario'];
 $total = calcularTotalLista($productos);
-$idCliente = isset($_SESSION['clienteVenta']) ? $_SESSION['clienteVenta'] : 11;
+$idCliente = isset($_SESSION['clienteVenta']) && !empty($_SESSION['clienteVenta']) ? $_SESSION['clienteVenta'] : 11;
 $medioPago = isset($_POST['mediopago']) ? $_POST['mediopago'] : 1;
 $iva = isset($_POST['iva']) ? $_POST['iva'] : 2;
 

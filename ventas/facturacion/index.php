@@ -1,5 +1,6 @@
 <?php
 include_once "../funciones.php";
+include_once "../funciones_proveedores.php";
 
 // Verificar si se proporciona un ID de venta o compra
 $idVenta = isset($_GET['idVenta']) ? $_GET['idVenta'] : null;

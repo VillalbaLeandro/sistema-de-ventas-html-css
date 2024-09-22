@@ -57,6 +57,16 @@ function obtenerTotalVentasMes($idUsuario = null)
     if ($fila) return  number_format($fila[0]->total, 2);
 }
 
+// Función para obtener todos los productos de la base de datos
+function obtenerTodosLosProductos()
+{
+    $conexion = conectarBaseDatos(); // Asegúrate de tener una función de conexión a la base de datos
+    $sql = "SELECT id, codigo, nombre, descripcion FROM producto ORDER BY nombre ASC"; // Ajusta el nombre de la tabla y columnas según tu estructura
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute();
+    return $sentencia->fetchAll(PDO::FETCH_OBJ);
+}
+
 // PROCEDIMIENTO ALMACENADO 
 function obtenerNumeroProductos()
 {
@@ -71,16 +81,29 @@ function obtenerNumeroProductos()
         $totalProductos = $resultado['totalProductos'];
 
         return $totalProductos;
-
     } catch (PDOException $e) {
         echo "Error al obtener el número de productos: " . $e->getMessage();
-        return 0; 
-
+        return 0;
     } finally {
         if ($conexion) {
             $conexion = null;
         }
     }
+}
+// Función para obtener el siguiente código de producto basado en el último registrado
+function obtenerSiguienteCodigoProducto()
+{
+    $conexion = conectarBaseDatos();
+    $sql = "SELECT MAX(codigo) AS max_codigo FROM producto";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute();
+    $resultado = $sentencia->fetch(PDO::FETCH_OBJ);
+
+    // Si no hay productos, el primer código será 1000
+    $ultimoCodigo = isset($resultado->max_codigo) ? (int)$resultado->max_codigo : 999;
+
+    // Retorna el siguiente código incrementando el último por 1
+    return $ultimoCodigo + 1;
 }
 
 function obtenerNumeroVentas()
@@ -137,16 +160,27 @@ function buscarProductos($search)
 {
     $pdo = conectarBaseDatos();
 
-    // Consulta SQL para buscar productos por código o nombre
-    $sql = "SELECT * FROM producto WHERE nombre LIKE :search OR codigo LIKE :search";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(array(':search' => '%' . $search . '%'));
+    if (!$pdo) {
+        // Manejar el error de conexión a la base de datos
+        return array();
+    }
 
-    // Recopila los resultados en un arreglo
-    $productos = $statement->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        // Consulta SQL para buscar productos por código o nombre
+        $sql = "SELECT * FROM producto WHERE nombre LIKE :search_nombre OR codigo LIKE :search_codigo";
+        $statement = $pdo->prepare($sql);
+        $statement->execute(array(':search_nombre' => '%' . $search . '%', ':search_codigo' => '%' . $search . '%'));
 
-    return $productos;
+        // Recopila los resultados en un arreglo
+        $productos = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $productos;
+    } catch (PDOException $e) {
+        // Manejar el error de la consulta SQL
+        return array();
+    }
 }
+
 
 
 function obtenerProductos($busqueda = null)
@@ -197,17 +231,52 @@ function obtenerCategorias()
 
     return select($sentencia, $parametros);
 }
-function obtenerCategoriaIVADeCliente($categoriaClienteId) {
+function obtenerCategoriaIVADeCliente($categoriaClienteId)
+{
     $sentencia = "SELECT id, nombre FROM categoria_cliente WHERE id = ?";
     $parametros = [$categoriaClienteId];
     $categoria = select($sentencia, $parametros);
-    
+
     if (!empty($categoria)) {
         return $categoria[0];
     } else {
-        return null; 
+        return null;
     }
 }
+// Función para obtener una categoría por su ID
+function obtenerCategoriaPorId($id) {
+    $conexion = conectarBaseDatos();
+    $sql = "SELECT * FROM categoria WHERE id = ?";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute([$id]);
+    return $sentencia->fetch(PDO::FETCH_OBJ);
+}
+
+// Función para agregar una nueva categoría
+function agregarCategoria($nombre) {
+    $conexion = conectarBaseDatos();
+    $sql = "INSERT INTO categoria (nombre) VALUES (?)";
+    $sentencia = $conexion->prepare($sql);
+    return $sentencia->execute([$nombre]);
+}
+
+// Función para editar una categoría
+function editarCategoria($id, $nombre) {
+    $conexion = conectarBaseDatos();
+    $sql = "UPDATE categoria SET nombre = ? WHERE id = ?";
+    $sentencia = $conexion->prepare($sql);
+    return $sentencia->execute([$nombre, $id]);
+}
+
+// Función para eliminar una categoría
+function eliminarCategoria($id) {
+    $conexion = conectarBaseDatos();
+    $sql = "DELETE FROM categoria WHERE id = ?";
+    $sentencia = $conexion->prepare($sql);
+    return $sentencia->execute([$id]);
+}
+
+
 function obtenerNumeroFactura()
 {
     $pdo = conectarBaseDatos();
@@ -250,12 +319,14 @@ function editar($sentencia, $parametros)
     $respuesta = $bd->prepare($sentencia);
     return $respuesta->execute($parametros);
 }
-function editarProducto($codigo, $nombre, $descripcion, $categoria_id, $precio_costo, $precio_venta, $stock, $id)
+function editarProducto($codigo, $nombre, $descripcion, $categoria_id, $precio_costo, $precio_venta, $stock_minimo, $id)
 {
-    $sentencia = "UPDATE producto SET codigo = ?, nombre = ?, descripcion = ?, categoria_id = ?, precio_costo = ?, precio_venta = ?, stock = ? WHERE id = ?";
-    $parametros = [$codigo, $nombre, $descripcion, $categoria_id, $precio_costo, $precio_venta, $stock, $id];
-    return editar($sentencia, $parametros);
+    $conexion = conectarBaseDatos();
+    $sql = "UPDATE producto SET codigo = ?, nombre = ?, descripcion = ?, categoria_id = ?, precio_costo = ?, precio_venta = ?, stock_minimo = ? WHERE id = ?";
+    $sentencia = $conexion->prepare($sql);
+    return $sentencia->execute([$codigo, $nombre, $descripcion, $categoria_id, $precio_costo, $precio_venta, $stock_minimo, $id]);
 }
+
 function eliminar($sentencia, $id)
 {
     $bd = conectarBaseDatos();
@@ -348,12 +419,12 @@ function obtenerCompraPorId($idCompra)
     }
 }
 
-function obtenerProveedorPorId($id)
-{
-    $sentencia = "SELECT * FROM proveedor WHERE id = ?";
-    $proveedor = select($sentencia, [$id]);
-    if ($proveedor) return $proveedor[0];
-}
+// function obtenerProveedorPorId($id)
+// {
+//     $sentencia = "SELECT * FROM proveedor WHERE id = ?";
+//     $proveedor = select($sentencia, [$id]);
+//     if ($proveedor) return $proveedor[0];
+// }
 
 function obtenerCategoriasProveedor()
 {
@@ -643,9 +714,9 @@ function registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idP
         $stmt->bindParam(':proveedor_id', $proveedor_id, PDO::PARAM_INT);
         $stmt->bindParam(':totalCompra', $totalCompra, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         $compra_id = $conexion->lastInsertId();
-        
+
         // Registro de detalles de compra
         $stmt = $conexion->prepare("INSERT INTO detalle_compra (compra_id, producto_id, cantidad, precio_unitario) VALUES (:compra_id, :producto_id, :cantidad, :precio_unitario)");
         $stmt->bindParam(':compra_id', $compra_id, PDO::PARAM_INT);
@@ -719,7 +790,8 @@ function actualizarTotalCompra($compra_id, $totalCompra)
 }
 
 
-function obtenerPrecioCompraPorProducto($productoId) {
+function obtenerPrecioCompraPorProducto($productoId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("SELECT COALESCE(precio_unitario, 0) AS precio_compra
@@ -743,7 +815,8 @@ function obtenerPrecioCompraPorProducto($productoId) {
     }
 }
 
-function obtenerUltimoIdCompra() {
+function obtenerUltimoIdCompra()
+{
     try {
         $conexion = conectarBaseDatos();
         $query = "SELECT MAX(id) AS ultimo_id FROM compra";
@@ -761,7 +834,8 @@ function obtenerUltimoIdCompra() {
     }
 }
 
-function registrarMovimientoProducto($producto_id, $tipo, $compraId, $venta_id, $cantidad, $fecha) {
+function registrarMovimientoProducto($producto_id, $tipo, $compraId, $venta_id, $cantidad, $fecha)
+{
     try {
         $conexion = conectarBaseDatos();
         $query = "INSERT INTO movimiento_producto (producto_id, tipo, compra_id, venta_id, cantidad, fecha) VALUES (?, ?, ?, ?, ?, ?)";
@@ -774,7 +848,8 @@ function registrarMovimientoProducto($producto_id, $tipo, $compraId, $venta_id, 
     }
 }
 
-function obtenerSaldoCaja() {
+function obtenerSaldoCaja()
+{
     try {
         $conexion = conectarBaseDatos();
 
@@ -791,7 +866,7 @@ function obtenerSaldoCaja() {
 
         return $saldo;
     } catch (PDOException $e) {
-        return 0; 
+        return 0;
     } finally {
         if ($conexion) {
             $conexion = null;
@@ -799,30 +874,15 @@ function obtenerSaldoCaja() {
     }
 }
 
-function obtenerHistorialCaja() {
+function obtenerHistorialCaja()
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->query("SELECT fecha, descripcion, monto FROM efectivocaja ORDER BY fecha DESC");
         $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $historial;
     } catch (PDOException $e) {
-        
-        return array(); 
-    } finally {
-        if ($conexion) {
-            $conexion = null;
-        }
-    }
-}
-function obtenerProveedores() {
-    try {
-        $conexion = conectarBaseDatos();
-        $stmt = $conexion->query("SELECT * FROM proveedor");
-        $proveedores = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        return $proveedores;
-    } catch (PDOException $e) {
-        echo "Error en la consulta de proveedores: " . $e->getMessage();
         return array();
     } finally {
         if ($conexion) {
@@ -830,8 +890,25 @@ function obtenerProveedores() {
         }
     }
 }
+// function obtenerProveedores() {
+//     try {
+//         $conexion = conectarBaseDatos();
+//         $stmt = $conexion->query("SELECT * FROM proveedor");
+//         $proveedores = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-function registrarEfectivoCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId) {
+//         return $proveedores;
+//     } catch (PDOException $e) {
+//         echo "Error en la consulta de proveedores: " . $e->getMessage();
+//         return array();
+//     } finally {
+//         if ($conexion) {
+//             $conexion = null;
+//         }
+//     }
+// }
+
+function registrarEfectivoCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
@@ -918,7 +995,8 @@ function obtenerSaldoActual($fechaInicio, $fechaFin)
     return $totalVentas - $totalCompras;
 }
 
-function obtenerMovimientosPorProducto($productoId) {
+function obtenerMovimientosPorProducto($productoId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("
@@ -1040,7 +1118,8 @@ function obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin)
 //     }
 // }
 
-function obtenerMovimientosPorProductos() {
+function obtenerMovimientosPorProductos()
+{
     // Obtener la lista de productos
     $productos = obtenerProductos();
 
@@ -1071,7 +1150,8 @@ function obtenerMovimientosPorProductos() {
     return $movimientos;
 }
 
-function obtenerMesDesdeFecha($fecha) {
+function obtenerMesDesdeFecha($fecha)
+{
     try {
         $dateTime = new DateTime($fecha);
         $mes = $dateTime->format('n'); // 'n' devuelve el número del mes sin ceros iniciales (1 hasta 12)
@@ -1083,7 +1163,8 @@ function obtenerMesDesdeFecha($fecha) {
     }
 }
 
-function obtenerDetallesVenta($productoId) {
+function obtenerDetallesVenta($productoId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("SELECT * FROM detalle_venta WHERE producto_id = :producto_id");
@@ -1103,7 +1184,8 @@ function obtenerDetallesVenta($productoId) {
 }
 
 // Función para obtener detalles de compra por producto
-function obtenerDetallesCompra($productoId) {
+function obtenerDetallesCompra($productoId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("SELECT * FROM detalle_compra WHERE producto_id = :producto_id");
@@ -1122,7 +1204,8 @@ function obtenerDetallesCompra($productoId) {
     }
 }
 
-function obtenerMovimientosPorMes($idProducto) {
+function obtenerMovimientosPorMes($idProducto)
+{
     // Obtener productos vendidos por mes
     $ventas = select("SELECT DATE_FORMAT(venta.fecha, '%Y-%m') AS mes, SUM(detalle_venta.cantidad) AS cantidad
                       FROM venta
@@ -1142,7 +1225,8 @@ function obtenerMovimientosPorMes($idProducto) {
 
     return $movimientos;
 }
-function obtenerNombreMes($numeroMes) {
+function obtenerNombreMes($numeroMes)
+{
     $meses = [
         1 => 'Enero',
         2 => 'Febrero',
@@ -1163,7 +1247,8 @@ function obtenerNombreMes($numeroMes) {
 
 
 
-function obtenerStockProducto($productoId) {
+function obtenerStockProducto($productoId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("SELECT stock FROM producto WHERE id = :producto_id");
@@ -1172,7 +1257,7 @@ function obtenerStockProducto($productoId) {
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         return $resultado['stock'];
     } catch (PDOException $e) {
-        return 0; 
+        return 0;
     } finally {
         if ($conexion) {
             $conexion = null;
@@ -1181,7 +1266,8 @@ function obtenerStockProducto($productoId) {
 }
 
 
-function registrarTransaccionCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId) {
+function registrarTransaccionCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId)
+{
     try {
         $conexion = conectarBaseDatos();
         $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
@@ -1208,10 +1294,10 @@ function registrarTransaccionCaja($fecha, $monto, $descripcion, $entradaSalidaId
 
 function conectarBaseDatos()
 {
-    $host = "bnreo6xkjc6wpmhjiyfx-mysql.services.clever-cloud.com";
-    $db   = "bnreo6xkjc6wpmhjiyfx";
-    $user = "u7mpdnoyxnnvgmyl";
-    $pass = "LQZ5NbHbFYtfoTiZaH3e";
+    $host = "localhost";
+    $db   = "drinkstore_db";
+    $user = "root";
+    $pass = "";
     $charset = 'utf8mb4';
 
     $options = [

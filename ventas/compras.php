@@ -8,6 +8,11 @@ if (empty($_SESSION['nombre'])) {
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
+include_once "funciones_proveedores.php";
+
+// Obtener la lista de proveedores
+$proveedores = obtenerProveedores();
+
 ?>
 <div class="container">
     <div class="card">
@@ -15,16 +20,16 @@ include_once "funciones.php";
             <h3 class="card-title">Registrar Compra</h3>
             <form method="post">
                 <div class="mb-3">
-                    <label for="codigo" class="form-label">Código de barras</label>
-                    <input class="form-control form-control-lg" name="codigo" id="codigo" type="search" placeholder="Código de barras" autocomplete="off" aria-label="codigoBarras">
-                    <div id="results"></div>
-                    <div id="error" class="text-danger"></div>
+                    <label for="producto" class="form-label">Selecciona el Producto</label>
+                    <!-- Campo de búsqueda dinámica de productos -->
+                    <input type="text" class="form-control" id="producto" placeholder="Código de barras o nombre del producto" autocomplete="off">
+                    <div id="results" class="position-relative"></div>
+                    <input type="hidden" name="producto_id" id="producto_id">
                 </div>
                 <div class="mb-3">
                     <label for="proveedor" class="form-label">Proveedor</label>
                     <select class="form-select" name="proveedor" id="proveedor" required>
                         <?php
-                        $proveedores = obtenerProveedores();
                         foreach ($proveedores as $proveedor) {
                             echo "<option value='{$proveedor->id}'>{$proveedor->nombre}</option>";
                         }
@@ -46,6 +51,7 @@ include_once "funciones.php";
                 <div class="mb-3">
                     <label for="precio_venta" class="form-label">Precio de Venta</label>
                     <input type="number" name="precio_venta" step="any" id="precio_venta" class="form-control" placeholder="Precio de venta" required>
+                    <small id="precio_sugerido" class="form-text text-muted"></small>
                 </div>
                 <div class="text-center mt-3">
                     <input type="submit" id="registrar_compra" name="registrar_compra" value="Registrar Compra" class="btn btn-outline-success btn-lg">
@@ -54,25 +60,31 @@ include_once "funciones.php";
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var codigoInput = document.getElementById("codigo");
+        var productoInput = document.getElementById("producto");
         var resultsDiv = document.getElementById("results");
-        var errorDiv = document.getElementById("error");
-        var registrarButton = document.getElementById("registrar_compra");
+        var productoIdInput = document.getElementById("producto_id");
+        var precioCompraInput = document.getElementById("precio_compra");
+        var precioVentaInput = document.getElementById("precio_venta");
+        var precioSugeridoText = document.getElementById("precio_sugerido");
 
-        codigoInput.addEventListener("input", function() {
-            var searchValue = codigoInput.value.trim();
+        // Búsqueda dinámica de productos
+        productoInput.addEventListener("input", function() {
+            var searchValue = productoInput.value.trim();
 
             if (searchValue === "") {
                 resultsDiv.innerHTML = "";
-                errorDiv.innerHTML = "";
+                productoIdInput.value = "";
                 return;
             }
 
+            // AJAX para buscar productos
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "buscar_productos.php?search=" + searchValue, true);
-
+            xhr.open("GET", "buscar_productos.php?search=" + encodeURIComponent(searchValue), true);
             xhr.onload = function() {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     var data = JSON.parse(xhr.responseText);
@@ -81,7 +93,6 @@ include_once "funciones.php";
                     console.error("Error en la solicitud AJAX: " + xhr.status);
                 }
             };
-
             xhr.send();
         });
 
@@ -89,34 +100,47 @@ include_once "funciones.php";
             resultsDiv.innerHTML = "";
             if (data.length > 0) {
                 var resultList = document.createElement("ul");
-                resultList.setAttribute("class", "list-group");
-                resultList.style.position = "absolute";
-                resultList.style.zIndex = "1000";
+                resultList.setAttribute("class", "list-group position-absolute");
+                resultList.style.width = "100%";
 
                 data.forEach(function(product) {
                     var resultItem = document.createElement("li");
                     resultItem.textContent = product.codigo + " - " + product.nombre + " - " + product.descripcion + " - $" + product.precio_venta;
                     resultItem.setAttribute("class", "list-group-item border border-dark-subtle");
 
+                    // Evento click para seleccionar un producto
                     resultItem.addEventListener("click", function() {
-                        codigoInput.value = product.codigo;
+                        productoInput.value = product.codigo + " - " + product.nombre;
+                        productoIdInput.value = product.id;
                         resultsDiv.innerHTML = "";
-                        errorDiv.innerHTML = "";
                     });
 
                     resultList.appendChild(resultItem);
                 });
                 resultsDiv.appendChild(resultList);
-                registrarButton.disabled = false; // Habilitar el botón
             } else {
-                errorDiv.innerHTML = "Producto no encontrado. Verifica el código de barras o crea el producto antes de continuar";
-                resultsDiv.innerHTML = "";
-                registrarButton.disabled = true; // Deshabilitar el botón
+                var noResultsItem = document.createElement("div");
+                noResultsItem.textContent = "No se encontraron productos.";
+                resultsDiv.appendChild(noResultsItem);
             }
         }
 
+        // Evento para calcular el precio sugerido cuando cambia el precio de compra
+        precioCompraInput.addEventListener("input", function() {
+            var precioCompra = parseFloat(precioCompraInput.value);
+            if (!isNaN(precioCompra)) {
+                var precioSugerido = (precioCompra * 1.4).toFixed(2);
+                precioSugeridoText.textContent = "Precio sugerido +40%: $" + precioSugerido;
+                precioVentaInput.value = precioSugerido; // Mostrar el precio sugerido en el campo de venta
+            } else {
+                precioSugeridoText.textContent = "";
+                precioVentaInput.value = ""; // Limpiar si no hay un número válido
+            }
+        });
+
+        // Ocultar los resultados cuando se hace clic fuera
         document.addEventListener("click", function(event) {
-            if (event.target !== codigoInput && event.target !== resultsDiv) {
+            if (event.target !== productoInput && event.target !== resultsDiv) {
                 resultsDiv.innerHTML = "";
             }
         });
@@ -127,40 +151,36 @@ include_once "funciones.php";
 include_once "footer.php";
 
 if (isset($_POST['registrar_compra'])) {
-    $codigo = $_POST['codigo'];
+    $producto_id = $_POST['producto_id'];
     $cantidad = $_POST['cantidad'];
     $precio_compra = $_POST['precio_compra'];
     $precio_venta = $_POST['precio_venta'];
     $proveedor_id = $_POST['proveedor'];
 
-    if (empty($codigo) || empty($cantidad) || empty($precio_compra) || empty($precio_venta) || empty($proveedor_id)) {
+    if (empty($producto_id) || empty($cantidad) || empty($precio_compra) || empty($precio_venta) || empty($proveedor_id)) {
         echo '
         <div class="alert alert-danger mt-3" role="alert">
             Debes completar todos los datos.
         </div>';
     } else {
-        $producto = obtenerProductoPorCodigo($codigo);
+        $producto = obtenerProductoPorId($producto_id);
         if (!$producto) {
             echo '
             <div class="alert alert-danger mt-3" role="alert">
-                Producto no encontrado. Verifica el código de barras o crea el producto antes de continuar.
+                Producto no encontrado. Verifica la selección del producto.
             </div>';
         } else {
             $idProducto = $producto->id;
             $compra_id = obtenerUltimoIdCompra();
-            $venta_id = null;
-            $cantidad = $cantidad;
-            $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : date('Y-m-d H:i:s'); // Si se proporciona una fecha, úsala; de lo contrario, usa la fecha actual.
-
-            // Modificación para obtener el total de la compra
+            $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : date('Y-m-d H:i:s');
             $totalCompra = $cantidad * $precio_compra;
+            $tipo_movimiento = 'Entrada'; // Esto se interpreta como entrada de dinero al registrar una compra.
+            $tipo_transaccion = 'Compra';
+            $saldo = obtenerSaldoActual($fecha, $fecha);
 
-            if (registrarCompra($codigo, $cantidad, $precio_compra, $precio_venta, $idProducto, $proveedor_id, $totalCompra)) {
-
-                $tipoMovimiento = 'Compra';
-                $compraId = obtenerUltimoIdCompra();
-                registrarMovimientoProducto($idProducto, 'Compra', $compraId, null, $cantidad, $fecha);
-                registrarEfectivoCaja($fecha, $totalCompra, 'Compra', null, null, 2, $compraId); // Ajusta el valor del tipo según tu esquema
+            if (registrarCompra($producto->codigo, $cantidad, $precio_compra, $precio_venta, $idProducto, $proveedor_id, $totalCompra)) {
+                registrarMovimientoProducto($idProducto, 'Compra', $compra_id, null, $cantidad, $fecha);
+                registrarEfectivoCaja($fecha, $totalCompra, 'Compra', null, null, 2, $compra_id);
 
                 echo '
                 <script>
@@ -171,7 +191,6 @@ if (isset($_POST['registrar_compra'])) {
                         showConfirmButton: false,
                         timer: 1500
                     }).then((result) => {
-                        // Redirige a la página de resumen de la compra o a donde desees.
                         window.location.href = "productos.php";
                     });
                 </script>';
@@ -184,4 +203,3 @@ if (isset($_POST['registrar_compra'])) {
         }
     }
 }
-?>

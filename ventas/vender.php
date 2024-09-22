@@ -4,15 +4,22 @@ if (empty($_SESSION['nombre'])) {
     header("location: login.php");
     exit;
 }
+
 include_once "encabezado.php";
 include_once "navbar.php";
 include_once "funciones.php";
 
-$_SESSION['lista'] = (isset($_SESSION['lista'])) ?  $_SESSION['lista'] : [];
+// Verifica si existe una lista de productos, si no la inicializa
+$_SESSION['lista'] = (isset($_SESSION['lista'])) ? $_SESSION['lista'] : [];
 $total = calcularTotalLista($_SESSION['lista']);
 $clientes = obtenerClientes();
-$clienteSeleccionado = (isset($_SESSION['clienteVenta'])) ? obtenerClientePorId($_SESSION['clienteVenta']) : null;
 
+// Asigna el cliente seleccionado o el cliente genérico (id 11) por defecto
+$clienteSeleccionado = (isset($_SESSION['clienteVenta']) && !empty($_SESSION['clienteVenta']))
+    ? obtenerClientePorId($_SESSION['clienteVenta'])
+    : obtenerClientePorId(11);
+
+// Resto del código
 $fechaInicio = (isset($_POST['inicio'])) ? $_POST['inicio'] : null;
 $fechaFin = (isset($_POST['fin'])) ? $_POST['fin'] : null;
 $usuario = (isset($_POST['idUsuario'])) ? $_POST['idUsuario'] : null;
@@ -20,6 +27,7 @@ $cliente = (isset($_POST['idCliente'])) ? $_POST['idCliente'] : null;
 
 $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
 ?>
+
 <div class="container mt-3">
     <form action="agregar_producto_venta.php" method="post" class="row" role="search">
         <div class="col-10">
@@ -39,26 +47,35 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                     <th>Descripción</th>
                     <th>Precio</th>
                     <th>Cantidad</th>
+                    <th>Stock</th>
                     <th>Subtotal</th>
                     <th>Quitar</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($_SESSION['lista']) { ?>
-                    <?php foreach ($_SESSION['lista'] as $key => $lista) { ?>
-                        <tr>
+                    <?php foreach ($_SESSION['lista'] as $key => $lista) {
+                        $stockClass = ($lista->stock <= $lista->stock_minimo) ? 'table-warning' : '';
+                    ?>
+                        <tr class="<?php echo $stockClass; ?>">
                             <td><?php echo $lista->codigo; ?></td>
                             <td><?php echo $lista->nombre; ?></td>
                             <td><?php echo $lista->descripcion; ?></td>
                             <td>$<?php echo $lista->precio_venta; ?></td>
                             <td>
-                                <div>
-                                    <!-- <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="decrementarCantidad(<?php echo $key; ?>)">-</button> -->
-                                    <input class="border-0 text-center" type="text" id="cantidad<?php echo $key; ?>" value="<?php echo $lista->cantidad; ?>">
-                                    <!-- <button type="button" class="btn border-0 btn-sm btn-outline-secondary shadow-sm  bg-body rounded text-dark" onclick="incrementarCantidad(<?php echo $key; ?>)">+</button> -->
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decrementarCantidad(<?php echo $key; ?>)">-</button>
+                                    <input class="border-0 text-center" type="text" id="cantidad<?php echo $key; ?>" value="<?php echo $lista->cantidad; ?>" readonly data-stock="<?php echo $lista->stock; ?>">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="incrementarCantidad(<?php echo $key; ?>)">+</button>
                                 </div>
                             </td>
-                            <td>$<?php echo floatval($lista->cantidad * $lista->precio_venta); ?></td>
+                            <td>
+                                <?php echo $lista->stock; ?>
+                                <?php if ($lista->stock <= $lista->stock_minimo) { ?>
+                                    <span class="text-danger"><i class="fas fa-exclamation-triangle"></i></span>
+                                <?php } ?>
+                            </td>
+                            <td id="subtotal<?php echo $key; ?>">$<?php echo number_format($lista->cantidad * $lista->precio_venta, 2); ?></td>
                             <td>
                                 <a href="quitar_producto_venta.php?id=<?php echo $lista->id ?>" class="btn btn-danger">
                                     <i class="fa fa-times"></i>
@@ -67,7 +84,6 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                         </tr>
                     <?php } ?>
                 <?php } ?>
-
             </tbody>
         </table>
         <?php if (empty($_SESSION['lista'])) { ?>
@@ -119,11 +135,14 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                     <?php
                     $ivas = obtenerIvas();
                     foreach ($ivas as $iva) {
-                        echo '<option value="' . $iva->id . '">' . $iva->nombre . '</option>';
+                        // Verificar si el IVA es el ID 2 y marcarlo como seleccionado
+                        $selected = $iva->id == 2 ? 'selected' : '';
+                        echo '<option value="' . $iva->id . '" ' . $selected . '>' . $iva->nombre . '</option>';
                     }
                     ?>
                 </select>
             </div>
+
 
             <div class="text-center mt-3">
                 <h1>Total: $<?php echo $total; ?></h1>
@@ -231,10 +250,16 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
     function incrementarCantidad(index) {
         var cantidadInput = document.getElementById('cantidad' + index);
         var cantidad = parseInt(cantidadInput.value);
-        cantidad++;
-        cantidadInput.value = cantidad;
-        actualizarSubtotal(index);
-        actualizarTotal();
+        var stockMaximo = parseInt(cantidadInput.dataset.stock); // Obtener el stock máximo desde un atributo de datos
+        if (cantidad < stockMaximo) {
+            cantidad++;
+            cantidadInput.value = cantidad;
+            actualizarCantidadEnServidor(index, cantidad);
+            actualizarSubtotal(index);
+            actualizarTotal();
+        } else {
+            alert("No se puede vender más que el stock disponible.");
+        }
     }
 
     function decrementarCantidad(index) {
@@ -243,26 +268,44 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
         if (cantidad > 1) {
             cantidad--;
             cantidadInput.value = cantidad;
+            actualizarCantidadEnServidor(index, cantidad);
             actualizarSubtotal(index);
             actualizarTotal();
         }
     }
 
+    function actualizarCantidadEnServidor(index, cantidad) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "actualizar_cantidad.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.status !== 'success') {
+                    console.error(response.message);
+                }
+            } else {
+                console.error("Error al actualizar la cantidad en el servidor.");
+            }
+        };
+        xhr.send("index=" + index + "&cantidad=" + cantidad);
+    }
+
     function actualizarSubtotal(index) {
         var cantidadInput = document.getElementById('cantidad' + index);
         var cantidad = parseInt(cantidadInput.value);
-        var precio = parseFloat(<?php echo $_SESSION['lista'][0]->precio_venta; ?>); // Obtén el precio del producto desde la primera fila (puedes cambiar esto)
+        var precio = parseFloat(document.querySelectorAll('td:nth-child(4)')[index].textContent.replace('$', ''));
         var subtotal = cantidad * precio;
-        var subtotalTd = document.querySelectorAll('td:nth-child(6)')[index];
+        var subtotalTd = document.getElementById('subtotal' + index);
         subtotalTd.textContent = '$' + subtotal.toFixed(2);
     }
 
     function actualizarTotal() {
-        var subtotales = document.querySelectorAll('td:nth-child(6)');
+        var subtotales = document.querySelectorAll('td[id^="subtotal"]');
         var total = 0;
-        for (var i = 0; i < subtotales.length; i++) {
-            total += parseFloat(subtotales[i].textContent.replace('$', ''));
-        }
+        subtotales.forEach(function(subtotal) {
+            total += parseFloat(subtotal.textContent.replace('$', ''));
+        });
         document.querySelector('h1').textContent = 'Total: $' + total.toFixed(2);
     }
 </script>

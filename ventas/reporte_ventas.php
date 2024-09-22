@@ -126,9 +126,9 @@ $usuarios = obtenerUsuarios();
                                     </td>
                                     <td>
                                         <div class="container d-flex">
-                                            <a title="Editar venta" class="btn btn-outline-secondary mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
+                                            <!-- <a title="Editar venta" class="btn btn-outline-secondary mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="editar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-edit"></i>
-                                            </a>
+                                            </a> -->
                                             <!-- <a title="Eliminar venta" class="btn btn-outline-danger mx-2" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" href="eliminar_producto.php?id=<?= $producto->id; ?>">
                                                 <i class="fa fa-trash"></i>
                                             </a> -->

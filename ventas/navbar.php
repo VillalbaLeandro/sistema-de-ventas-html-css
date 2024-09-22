@@ -9,29 +9,26 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item mx-1">
-          <a class="nav-link active " href="index.php">
+          <a class="nav-link active" href="index.php">
             <i class="fa fa-home"></i>
             Inicio
           </a>
         </li>
-        <li class="nav-item mx-1">
-          <a class="nav-link active" href="productos.php">
-            <i class="fa fa-shopping-cart"></i>
-            Productos
+
+        <!-- Menú Desplegable para Agrupar Botones -->
+        <li class="nav-item dropdown mx-1">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-cogs"></i> Gestión
           </a>
+          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="productos.php"><i class="fa fa-shopping-cart"></i> Productos</a></li>
+            <li><a class="dropdown-item" href="clientes.php"><i class="fa fa-user-friends"></i> Clientes</a></li>
+            <li><a class="dropdown-item" href="listar_proveedores.php"><i class="fa fa-truck"></i> Proveedores</a></li>
+            <li><a class="dropdown-item" href="usuarios.php"><i class="fa fa-users"></i> Usuarios</a></li>
+            <li><a class="dropdown-item" href="categorias.php"><i class="fas fa-list"></i></i> Categorias</a></li>
+          </ul>
         </li>
-        <li class="nav-item mx-1">
-          <a class="nav-link active" href="usuarios.php">
-            <i class="fa fa-users"></i>
-            Usuarios
-          </a>
-        </li>
-        <li class="nav-item mx-1">
-          <a class="nav-link active" href="clientes.php">
-            <i class="fa fa-user-friends"></i>
-            Clientes
-          </a>
-        </li>
+
         <li class="nav-item mx-1">
           <a class="nav-link active" href="vender.php">
             <i class="fa fa-cash-register"></i>
@@ -58,8 +55,8 @@
         </li>
         <li class="nav-item mx-1">
           <a class="nav-link active" href="estadisticas.php">
-            <i class="far fa-money-bill-alt"></i>
-            Estadisticas
+            <i class="far fa-chart-bar"></i>
+            Estadísticas
           </a>
         </li>
       </ul>
@@ -67,14 +64,12 @@
         <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
           <i class="fas fa-user"></i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start  dropdown-menu-dark">
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start dropdown-menu-dark">
           <li><a href="perfil.php" class="dropdown-item">Perfil</a></li>
           <li><a href="cerrar_sesion.php" class="dropdown-item">Salir</a></li>
         </ul>
       </div>
-
     </div>
   </div>
-
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
