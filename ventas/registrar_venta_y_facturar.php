@@ -11,8 +11,8 @@ $productos = $_SESSION['lista'];
 $idUsuario = $_SESSION['idUsuario'];
 $total = calcularTotalLista($productos);
 
-// Verificar que $idCliente tenga un valor válido; asignar 11 si está vacío
-$idCliente = isset($_SESSION['clienteVenta']) && !empty($_SESSION['clienteVenta']) ? $_SESSION['clienteVenta'] : 11;
+// Verificar que $idCliente tenga un valor válido; asignar 1 si está vacío
+$idCliente = isset($_SESSION['clienteVenta']) && !empty($_SESSION['clienteVenta']) ? $_SESSION['clienteVenta'] : 1;
 
 $medioPago = isset($_POST['mediopago']) ? $_POST['mediopago'] : 1;
 $iva = isset($_POST['iva']) ? $_POST['iva'] : 2;

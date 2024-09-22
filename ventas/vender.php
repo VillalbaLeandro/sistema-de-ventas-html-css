@@ -19,7 +19,6 @@ $clienteSeleccionado = (isset($_SESSION['clienteVenta']) && !empty($_SESSION['cl
     ? obtenerClientePorId($_SESSION['clienteVenta'])
     : obtenerClientePorId(11);
 
-// Resto del código
 $fechaInicio = (isset($_POST['inicio'])) ? $_POST['inicio'] : null;
 $fechaFin = (isset($_POST['fin'])) ? $_POST['fin'] : null;
 $usuario = (isset($_POST['idUsuario'])) ? $_POST['idUsuario'] : null;
@@ -53,9 +52,10 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                 </tr>
             </thead>
             <tbody>
-                <?php if ($_SESSION['lista']) { ?>
+                <?php if (!empty($_SESSION['lista'])) { ?>
                     <?php foreach ($_SESSION['lista'] as $key => $lista) {
-                        $stockClass = ($lista->stock <= $lista->stock_minimo) ? 'table-warning' : '';
+                        // Verificar si el producto tiene stock 0 y establecer clase de advertencia
+                        $stockClass = ($lista->stock == 0) ? 'table-danger' : (($lista->stock <= $lista->stock_minimo) ? 'table-warning' : '');
                     ?>
                         <tr class="<?php echo $stockClass; ?>">
                             <td><?php echo $lista->codigo; ?></td>
@@ -64,14 +64,12 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                             <td>$<?php echo $lista->precio_venta; ?></td>
                             <td>
                                 <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decrementarCantidad(<?php echo $key; ?>)">-</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decrementarCantidad(<?php echo $key; ?>)" <?php echo ($lista->stock == 0) ? 'disabled' : ''; ?>>-</button>
                                     <input class="border-0 text-center" type="text" id="cantidad<?php echo $key; ?>" value="<?php echo $lista->cantidad; ?>" readonly data-stock="<?php echo $lista->stock; ?>">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="incrementarCantidad(<?php echo $key; ?>)">+</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="incrementarCantidad(<?php echo $key; ?>)" <?php echo ($lista->stock == 0) ? 'disabled' : ''; ?>>+</button>
                                 </div>
                             </td>
-                            <td>
-                                <?php echo $lista->stock; ?>
-                                <?php if ($lista->stock <= $lista->stock_minimo) { ?>
+                            <td><?php echo $lista->stock; ?> <?php if ($lista->stock <= $lista->stock_minimo) { ?>
                                     <span class="text-danger"><i class="fas fa-exclamation-triangle"></i></span>
                                 <?php } ?>
                             </td>
@@ -83,6 +81,10 @@ $ventas = obtenerVentas($fechaInicio, $fechaFin, $cliente, $usuario);
                             </td>
                         </tr>
                     <?php } ?>
+                <?php } else { ?>
+                    <tr>
+                        <td colspan="8" class="text-center">No hay productos agregados a la lista.</td>
+                    </tr>
                 <?php } ?>
             </tbody>
         </table>

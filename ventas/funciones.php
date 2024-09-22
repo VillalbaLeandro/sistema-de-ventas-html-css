@@ -244,7 +244,8 @@ function obtenerCategoriaIVADeCliente($categoriaClienteId)
     }
 }
 // Función para obtener una categoría por su ID
-function obtenerCategoriaPorId($id) {
+function obtenerCategoriaPorId($id)
+{
     $conexion = conectarBaseDatos();
     $sql = "SELECT * FROM categoria WHERE id = ?";
     $sentencia = $conexion->prepare($sql);
@@ -253,7 +254,8 @@ function obtenerCategoriaPorId($id) {
 }
 
 // Función para agregar una nueva categoría
-function agregarCategoria($nombre) {
+function agregarCategoria($nombre)
+{
     $conexion = conectarBaseDatos();
     $sql = "INSERT INTO categoria (nombre) VALUES (?)";
     $sentencia = $conexion->prepare($sql);
@@ -261,7 +263,8 @@ function agregarCategoria($nombre) {
 }
 
 // Función para editar una categoría
-function editarCategoria($id, $nombre) {
+function editarCategoria($id, $nombre)
+{
     $conexion = conectarBaseDatos();
     $sql = "UPDATE categoria SET nombre = ? WHERE id = ?";
     $sentencia = $conexion->prepare($sql);
@@ -269,7 +272,8 @@ function editarCategoria($id, $nombre) {
 }
 
 // Función para eliminar una categoría
-function eliminarCategoria($id) {
+function eliminarCategoria($id)
+{
     $conexion = conectarBaseDatos();
     $sql = "DELETE FROM categoria WHERE id = ?";
     $sentencia = $conexion->prepare($sql);
@@ -907,30 +911,49 @@ function obtenerHistorialCaja()
 //     }
 // }
 
-function registrarEfectivoCaja($fecha, $monto, $descripcion, $entradaSalidaId, $ventaId, $tipo, $compraId)
+function registrarEfectivoCaja($fecha, $monto, $descripcion, $entrada_salida_id, $tipo_movimiento, $tipo_transaccion, $venta_id = null, $compra_id = null)
 {
-    try {
-        $conexion = conectarBaseDatos();
-        $stmt = $conexion->prepare("INSERT INTO efectivocaja (fecha, monto, descripcion, entrada_salida_id, venta_id, tipo, compra_id) VALUES (:fecha, :monto, :descripcion, :entrada_salida_id, :venta_id, :tipo, :compra_id)");
-        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
-        $stmt->bindParam(':monto', $monto, PDO::PARAM_INT);
-        $stmt->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
-        $stmt->bindParam(':entrada_salida_id', $entradaSalidaId, PDO::PARAM_INT);
-        $stmt->bindParam(':venta_id', $ventaId, PDO::PARAM_INT);
-        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_INT);
-        $stmt->bindParam(':compra_id', $compraId, PDO::PARAM_INT);
+    $conexion = conectarBaseDatos();
 
-        $stmt->execute();
-        return true;
+    // Prepara la consulta para insertar en efectivocaja
+    $sql = "INSERT INTO efectivocaja (fecha, monto, descripcion, tipo_movimiento, tipo_transaccion, entrada_salida_id, venta_id, compra_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    try {
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute([$fecha, $monto, $descripcion, $tipo_movimiento, $tipo_transaccion, $entrada_salida_id, $venta_id, $compra_id]);
     } catch (PDOException $e) {
         echo "Error al registrar efectivo en caja: " . $e->getMessage();
-        return false;
-    } finally {
-        if ($conexion) {
-            $conexion = null;
-        }
     }
 }
+/**
+ * Función para registrar movimientos manuales en la caja, incluyendo el saldo inicial.
+ */
+/**
+ * Función para registrar movimientos manuales en la caja, incluyendo el saldo inicial.
+ */
+function registrarMovimientoManualCaja($fecha, $monto, $descripcion, $tipoMovimiento, $tipoTransaccion)
+{
+    $conexion = conectarBaseDatos();
+
+    // Determina el valor de 'tipo' basado en el tipo de movimiento. 
+    // Aquí asumimos '1' para entradas manuales y '2' para salidas manuales, ajusta según tu lógica.
+    $tipo = $tipoMovimiento === 'Entrada' ? 1 : 2;
+
+    // Insertar el movimiento en la tabla efectivocaja, incluyendo el campo 'tipo'
+    $sql = "INSERT INTO efectivocaja (fecha, monto, descripcion, tipo_movimiento, tipo_transaccion, entrada_salida_id, venta_id, compra_id, tipo) 
+            VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, ?)";
+
+    try {
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute([$fecha, $monto, $descripcion, $tipoMovimiento, $tipoTransaccion, $tipo]);
+        echo '<div class="alert alert-success mt-3" role="alert">Movimiento registrado con éxito.</div>';
+    } catch (PDOException $e) {
+        echo "Error al registrar movimiento en caja: " . $e->getMessage();
+    }
+}
+
+
 function obtenerSaldoAnterior($fechaInicio)
 {
     try {

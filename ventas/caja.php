@@ -23,13 +23,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validar y registrar el saldo inicial
     if (isset($_POST['registrar_saldo_inicial'])) {
-        registrarEfectivoCaja($fecha, $monto, $descripcion, null, $tipoMovimiento, $tipoTransaccion, null, null, $monto);
+        $saldoInicial = obtenerSaldoAnterior($fechaInicio); // Verificar si ya existe un saldo inicial
+        if ($saldoInicial == 0) {
+            registrarMovimientoManualCaja($fecha, $monto, $descripcion, $tipoMovimiento, $tipoTransaccion);
+        } else {
+            echo '<div class="alert alert-danger mt-3" role="alert">Ya existe un saldo inicial registrado.</div>';
+        }
     }
 
     // Registrar entrada o salida manual
     if (isset($_POST['registrar_movimiento'])) {
-        // Registrar el movimiento en la caja sin intentar guardar el saldo
-        registrarEfectivoCaja($fecha, $monto, $descripcion, null, $tipoMovimiento, $tipoTransaccion, null, null, null); 
+        registrarMovimientoManualCaja($fecha, $monto, $descripcion, $tipoMovimiento, $tipoTransaccion);
     }
 
     // Actualizar el rango de fechas si se envía desde el formulario
@@ -41,7 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Obtener el historial de transacciones
 $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
-
 ?>
 
 <div class="container">
@@ -83,6 +86,7 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
         </div>
     </div>
 
+    <!-- Formulario para establecer saldo inicial -->
     <!-- <div class="card mt-4">
         <div class="card-body">
             <h4 class="mb-4">Establecer Saldo Inicial</h4>
@@ -96,8 +100,9 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 
+    <!-- Formulario para registrar movimiento manual -->
     <div class="card mt-4">
         <div class="card-body">
             <h4 class="mb-4">Registrar Movimiento Manual</h4>
@@ -126,7 +131,7 @@ $historial = obtenerHistorialCajaPorFecha($fechaInicio, $fechaFin);
                 </div>
             </form>
         </div>
-    </div> -->
+    </div>
 
     <!-- Formulario para filtrar por fechas -->
     <div class="card mt-4">
